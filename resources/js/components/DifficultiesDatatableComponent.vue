@@ -1,0 +1,324 @@
+<template>
+    <div>
+
+<div class="row">
+    <div class="col-xs-12">
+        <div class="card">
+            <div class="card-header">
+                <h4 class="card-title">Difficulties</h4>
+                <a class="heading-elements-toggle"><i class="icon-ellipsis font-medium-3"></i></a>
+                <div class="heading-elements">
+                    <ul class="list-inline mb-0">
+                        <li><a data-action="collapse"><i class="icon-minus4"></i></a></li>
+                        <li><a data-action="reload"><i class="icon-reload"></i></a></li>
+                        <li><a data-action="expand"><i class="icon-expand2"></i></a></li>
+                        <li><a data-action="close"><i class="icon-cross2"></i></a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="card-body collapse in">
+                <!-- Alerts -->
+                <div :class="'alert alert-'+notif.type +''" role="alert" v-show="notif.show">
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                    <div v-html="notif.message"></div>
+                </div>
+                <!-- Add button -->
+                <button type="button" class="btn btn-primary m-2" @click="dataModalOpen">
+                    <i class="icon-plus"></i> ADD
+                </button>
+
+                <datatable :columns="columns" :sortKey="sortKey" :sortOrders="sortOrders" @sort="sortBy">
+                    <tbody>
+                        <tr v-for="project in projects" :key="project.id">
+                            <td>{{project.name}}</td>
+                            <td>{{project.description}}</td>
+                            <td>
+                                <button class="btn btn-danger btn-sm" @click="deleteData(project)"><span class="fa fa-trash"></span></button>
+                                <button class="btn btn-info btn-sm" @click="editData(project)"><span class="fa fa-edit"></span></button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </datatable>
+                <pagination :pagination="pagination"
+                            @prev="getProjects(pagination.prevPageUrl)"
+                            @next="getProjects(pagination.nextPageUrl)">
+                </pagination>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- Modal -->
+<div class="modal fade text-xs-left" id="dataModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel2" aria-hidden="true">
+    <div class="modal-dialog modal-md" role="document">
+    <div class="modal-content">
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <div class="modal-body">
+<div class="row match-height">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-body collapse in">
+                <div class="card-block">
+                    <form class="form">
+                        <div class="form-body">
+                            <h4 class="form-section"><i class="icon-folder4"></i> {{ todo }} Difficulty</h4>
+
+                            <div class="form-group">
+                                <label for="userinput5">Email</label>
+                                <input class="form-control border-primary" type="email" placeholder="email" id="userinput5">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="userinput6">Website</label>
+                                <input class="form-control border-primary" type="url" placeholder="http://" id="userinput6">
+                            </div>
+
+                        </div>
+
+                    </form>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+        </div>
+        <div class="modal-footer">
+            <div class="form-actions right">
+                <button type="button" class="btn btn-warning mr-1" data-dismiss="modal">
+                    <i class="icon-cross2"></i> Cancel
+                </button>
+                <button type="submit" class="btn btn-primary">
+                    <i class="icon-check2"></i> Save
+                </button>
+            </div>
+        </div>
+    </div>
+    </div>
+</div>
+
+
+
+    </div>
+</template>
+
+<script>
+
+class Errors{
+    constructor(){
+        this.errors = {};
+    }
+    get(field){
+        const keys = Object.keys(this.errors);
+
+        var err = '';
+        for (var a = 0; a < keys.length; a++) {
+            err += this.errors[keys[a]] + "<br>";
+        }
+        return err;
+    }
+    record(errors){
+        this.errors = errors.errors
+    }
+}
+
+import Datatable from './Datatables.vue';
+import Pagination from './DatatablePagination.vue';
+export default {
+    components: { datatable: Datatable, pagination: Pagination },
+    created() {
+        this.getProjects();
+
+    },
+    data() {
+        let sortOrders = {};
+
+        let columns = [
+            { name: 'name', label: 'Difficulty' },
+            { name: 'description', label: 'Description'},
+        ];
+
+        columns.forEach((column) => {
+           sortOrders[column.name] = -1;
+        });
+        return {
+            projects: [],
+            columns: columns,
+            sortKey: 'name',
+            sortOrders: sortOrders,
+            showActionTable: true,
+            perPage: ['10', '20', '30'],
+            tableData: {
+                draw: 0,
+                length: 10,
+                search: '',
+                column: 0,
+                dir: 'desc',
+            },
+            pagination: {
+                lastPage: '',
+                currentPage: '',
+                total: '',
+                lastPageUrl: '',
+                nextPageUrl: '',
+                prevPageUrl: '',
+                from: '',
+                to: ''
+            },
+            datas: {
+                name: '',
+                description: '',
+
+            },
+            todo: 'Add',
+            editableId: '',
+            endPoint: '/api/difficulties/',
+            notif: {
+                type: 'alert',
+                message: '<strong>Oh snap!</strong> Change a <a href="#" class="alert-link">few things up</a> and try submitting again.',
+                show: false,
+            },
+            errors: new Errors(),
+        }
+    },
+    methods: {
+
+        showNotif(type, message){
+            this.notif.type = type;
+            this.notif.message = message;
+            this.notif.show = true;
+
+            setTimeout(() => this.notif.show = false, 5000)
+        },
+
+        clearFields(){
+            const keys = Object.keys(this.datas);
+            for (var a = 0; a < keys.length; a++) {
+                this.datas[keys[a]] = '';
+            }
+            this.todo = 'Add';
+        },
+
+        dataModalOpen(){
+            this.clearFields();
+            $('#dataModal').modal('show');
+        },
+
+        saveData(){
+            if(this.todo == 'Add'){
+                axios.post(this.endPoint, this.datas)
+                .then((res) => {
+                    new Noty({killer: true, type: 'success', text: 'Successfully saved.', layout: 'topRight'}).show();
+                    this.getProjects();
+                    this.clearFields();
+                })
+                .catch((err) => {
+                    this.errors.record(err.response.data);
+                    new Noty({killer: true, type: 'error', text: this.errors.get('name'), layout: 'topRight'}).show();
+                });
+            }
+            else if(this.todo == 'Edit'){
+                axios.patch(this.endPoint+this.editableId, this.datas)
+                .then((res) => {
+                    new Noty({killer: true, type: 'success', text: 'Successfully updated.', layout: 'topRight'}).show();
+                    this.getProjects();
+                    this.clearFields();
+                })
+                .catch((err) => {
+                    this.errors.record(err.response.data);
+                    new Noty({killer: true, type: 'error', text: this.errors.get('name'), layout: 'topRight'}).show();
+                });
+            }
+            
+        },
+
+        deleteData(dataDelete){
+            var self = this;
+            var endPoint = this.endPoint;
+            new Noty({
+                killer: true, 
+                text: 'Do you want to delete this?',
+                type: 'warning', 
+                buttons: [
+                    {
+                        addClass: 'btn btn-danger btn-sm', text: 'Ok', onClick: function($noty) {
+                            axios.delete(endPoint+dataDelete.id)
+                            .then((res) => {
+                                self.getProjects();
+                                self.clearFields();
+                                new Noty({killer: true, type: 'success', text: 'Successfully removed.', layout: 'topRight'}).show();
+                            })
+                            .catch((err) => {
+                                console.log(err); 
+                            });
+                        }
+                    },
+                    {
+                        addClass: 'btn btn-primary btn-sm', text: 'Cancel', onClick: function($noty) {
+                            $noty.close();
+                        }
+                    }
+                ]
+            });
+
+            
+        },
+        editData(dataEdit){
+
+            const keys = Object.keys(this.datas);
+            for (var a = 0; a < keys.length; a++) {
+                this.datas[keys[a]] = dataEdit[keys[a]];
+            }
+
+            this.editableId = dataEdit.id;
+            this.todo = 'Edit';
+        },
+
+        getProjects() {
+            this.tableData.draw++;
+            axios.get(this.endPoint, {params: this.tableData})
+                .then(response => {
+                    let data = response.data;
+                    if (this.tableData.draw == data.draw) {
+                        this.projects = data.data.data;
+                        this.configPagination(data.data);
+                    }
+
+                    if(this.pagination.total == 0){
+                        this.showNotif('warning', '<strong>Warning!</strong> No data found!.');
+                    }
+                })
+                .catch(errors => {
+                    console.log(errors);
+                });
+        },
+        configPagination(data) {
+            this.pagination.lastPage = data.last_page;
+            this.pagination.currentPage = data.current_page;
+            this.pagination.total = data.total;
+            this.pagination.lastPageUrl = data.last_page_url;
+            this.pagination.nextPageUrl = data.next_page_url;
+            this.pagination.prevPageUrl = data.prev_page_url;
+            this.pagination.from = data.from;
+            this.pagination.to = data.to;
+        },
+        sortBy(key) {
+            this.sortKey = key;
+            this.sortOrders[key] = this.sortOrders[key] * -1;
+            this.tableData.column = this.getIndex(this.columns, 'name', key);
+            this.tableData.dir = this.sortOrders[key] === 1 ? 'asc' : 'desc';
+            this.getProjects();
+        },
+        getIndex(array, key, value) {
+            return array.findIndex(i => i[key] == value)
+        },
+    }
+};
+</script>
