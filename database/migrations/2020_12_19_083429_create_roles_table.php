@@ -30,6 +30,11 @@ class CreateRolesTable extends Migration
             'name' => 'Super Admin',
         ];
         DB::table('roles')->insert($templateData);
+
+        $templateData = [
+            'name' => 'Instructor',
+        ];
+        DB::table('roles')->insert($templateData);
     }
 
     /**

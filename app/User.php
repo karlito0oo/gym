@@ -29,7 +29,6 @@ class User extends Authenticatable implements MustVerifyEmail
         'password', 'remember_token',
     ];
 
-    protected $appends = ['role'];
     /**
      * The attributes that should be cast to native types.
      *
@@ -39,8 +38,12 @@ class User extends Authenticatable implements MustVerifyEmail
         'email_verified_at' => 'datetime',
     ];
 
-    public function getRoleAttribute(){
-        $role = Role::find($this->role_id);
-        return $role->name;
+
+    public function section(){
+        return $this->hasOne('App\Section', 'id', 'section_id');
+    }
+
+    public function role(){
+        return $this->hasOne('App\Role', 'id', 'role_id');
     }
 }

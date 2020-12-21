@@ -7,13 +7,20 @@ use Illuminate\Http\Request;
 
 class ReadingsController extends Controller
 {
-    public function validateData(){
-        return [
-            'name' => 'required',
-            'description' => 'required',
-            'data' => 'required',
-            'genre_id' => 'required',
-        ];
+    public function validateData(Request $request){
+        $temp = request()->validate(
+            [
+                'title' => 'required',
+                'description' => 'required',
+                'data' => 'required',
+                'genre_id' => 'required',
+                'difficulty' => 'required',
+            ],
+            [
+                'genre_id.required' => 'The genre field is required.',
+                'data.required' => 'The story field is required.',
+            ]
+        );
     }
     /**
      * Display a listing of the resource.
@@ -22,7 +29,7 @@ class ReadingsController extends Controller
      */
     public function index(Request $request)
     {
-        $columns = ['name', 'description', 'data', 'genre_id'];
+        $columns = ['title', 'description', 'difficulty', 'genre_id', 'data'];
 
         $length = $request->input('length');
         $column = $request->input('column'); //Index
@@ -61,7 +68,7 @@ class ReadingsController extends Controller
      */
     public function store(Request $request)
     {
-        $data = request()->validate($this->validateData());
+        $this->validateData($request);
         return Reading::create($request->all());
     }
 
@@ -97,14 +104,15 @@ class ReadingsController extends Controller
     public function update(Request $request, $id)
     {
         
-        $data = request()->validate($this->validateData());
+        $this->validateData($request);
 
         $data = Reading::find($id);
 
-        $data->name = $request->name;
+        $data->title = $request->title;
         $data->description = $request->description;
         $data->data = $request->data;
         $data->genre_id = $request->genre_id;
+        $data->difficulty = $request->difficulty;
 
         return $data->save();
     }

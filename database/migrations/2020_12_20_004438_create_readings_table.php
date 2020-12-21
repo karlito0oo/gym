@@ -15,10 +15,11 @@ class CreateReadingsTable extends Migration
     {
         Schema::create('readings', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
+            $table->string('title');
             $table->string('description');
             $table->longText('data');
             $table->unsignedInteger('genre_id');
+            $table->string('difficulty');
             $table->timestamps();
         });
     }

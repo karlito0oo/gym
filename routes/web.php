@@ -30,6 +30,21 @@ Route::resource('/api/genres', 'GenresController');
 Route::get('/home/genres', 'GenresController@pageHome');
 Route::post('/api/genres/fetch', 'GenresController@fetch');
 
-//Genres
+//Readings
 Route::resource('/api/readings', 'ReadingsController');
 Route::get('/home/readings', 'ReadingsController@pageHome');
+
+//Sections
+Route::resource('/api/sections', 'SectionsController');
+Route::get('/home/sections', 'SectionsController@pageHome');
+Route::post('/api/sections/fetch', 'SectionsController@fetch');
+
+//Students
+Route::resource('/api/students', 'StudentsController');
+Route::get('/home/students', 'StudentsController@pageHome');
+Route::patch('/api/students/updateSection/{id}', 'StudentsController@updateSection');
+
+//Users
+Route::resource('/api/users', 'UsersController');
+Route::get('/home/users', 'UsersController@pageHome');
+Route::post('/api/users/fetch', 'UsersController@fetch');

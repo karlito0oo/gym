@@ -27,6 +27,10 @@ Vue.component('genres-component', require('./components/GenresDatatableComponent
 
 Vue.component('reading-component', require('./components/ReadingDatatableComponent.vue').default);
 
+Vue.component('sections-component', require('./components/SectionsDatatableComponent.vue').default);
+
+Vue.component('students-component', require('./components/StudentsDatatableComponent.vue').default);
+
 Vue.component('example-component', require('./components/ExampleComponent.vue').default);
 
 /**

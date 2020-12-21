@@ -33,10 +33,11 @@
                 <datatable :columns="columns" :sortKey="sortKey" :sortOrders="sortOrders" @sort="sortBy">
                     <tbody>
                         <tr v-for="project in projects" :key="project.id">
-                            <td>{{project.name}}</td>
+                            <td>{{project.title}}</td>
                             <td>{{project.description}}</td>
+                            <td>{{project.difficulty}}</td>
                             <td>{{project.genre.name}}</td>
-                            <td>{{project.data}}</td>
+                            <td v-html="(project.data.length < 50 ? project.data : project.data.substring(0,50) + ' ...')"></td>
                             <td>
                                 <button class="btn btn-warning btn-sm" @click="deleteDataConfirm(project)"><span class="icon-android-delete"></span></button>
                                 <button class="btn btn-info btn-sm" @click="editData(project)"><span class="icon-edit"></span></button>
@@ -57,7 +58,7 @@
 <!-- Modal -->
 <form class="form" @submit.prevent="saveData()">
 <div class="modal fade text-xs-left" id="dataModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel2" aria-hidden="true">
-    <div class="modal-dialog modal-md" role="document">
+    <div class="modal-dialog modal-lg" role="document">
     <div class="modal-content">
         <div class="modal-header">
             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -71,19 +72,20 @@
             <div class="card-body collapse in">
                 <div class="card-block">
                     
-                        <!-- Alerts -->
+                       <!-- Alerts -->
                         <div :class="'alert alert-'+notif.type +''" role="alert" v-show="notif.show">
                             <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                                 <span aria-hidden="true">×</span>
                             </button>
-                            <div v-html="notif.message"></div>
+                            <div><span v-html="notif.message"></span><span v-show="notif.confirm"> Click <a @click="handle_function_call(notif.function)" class="alert-link">here</a> to proceed.</span></div>
+                            
                         </div>
                         <div class="form-body">
                             <h4 class="form-section"><i class="icon-folder4"></i> {{ todo }} Reading Comprehension</h4>
 
                             <div class="form-group">
-                                <label for="userinput5">Name</label>
-                                <input class="form-control border-primary" type="text" placeholder="name" v-model="datas.name">
+                                <label for="userinput5">Title</label>
+                                <input class="form-control border-primary" type="text" placeholder="Title" v-model="datas.title">
                             </div>
 
                             <div class="form-group">
@@ -102,8 +104,19 @@
                             </div>
 
                             <div class="form-group">
+                                <label for="userinput6">Difficulty</label>
+                                <select class="form-control border-primary" v-model="datas.difficulty">
+                                    <option value="">Select difficulty</option>
+                                    <option>Beginner</option>
+                                    <option>Intermediate</option>
+                                    <option>Advance</option>
+                                    <option>Expert</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
                                 <label for="userinput6">Story</label>
-                                <textarea class="form-control border-primary" name="storyTextarea" id="storyTextarea" v-model="datas.data">
+                                <textarea class="form-control border-primary" name="ckEditorTextarea" id="storyTextarea" v-model="datas.data">
                                 </textarea>
                             </div>
 
@@ -158,19 +171,18 @@ class Errors{
 
 import Datatable from './Datatables.vue';
 import Pagination from './DatatablePagination.vue';
-import ck from './../ckeditor/ckeditor.js';
 export default {
     components: { datatable: Datatable, pagination: Pagination },
     created() {
         this.getProjects();
-        ck.CKEDITOR('storyTextarea');
     },
     data() {
         let sortOrders = {};
 
         let columns = [
-            { name: 'name', label: 'Name' },
+            { name: 'title', label: 'Title' },
             { name: 'description', label: 'Description'},
+            { name: 'difficulty', label: 'difficulty'},
             { name: 'genre_id', label: 'Genre'},
             { name: 'data', label: 'Story'},
         ];
@@ -181,7 +193,7 @@ export default {
         return {
             projects: [],
             columns: columns,
-            sortKey: 'name',
+            sortKey: 'title',
             sortOrders: sortOrders,
             showActionTable: true,
             perPage: ['10', '20', '30'],
@@ -203,10 +215,11 @@ export default {
                 to: ''
             },
             datas: {
-                name: '',
+                title: '',
                 description: '',
                 data: '',
                 genre_id: '',
+                difficulty: '',
 
             },
             todo: 'Add',
@@ -225,7 +238,6 @@ export default {
         }
     },
     methods: {
-        
         genresFetch(){
             axios.post('/api/genres/fetch')
             .then((res) => {
@@ -262,6 +274,7 @@ export default {
         },
 
         saveData(){
+            this.datas.data = CKEDITOR.instances.storyTextarea.getData();
             if(this.todo == 'Add'){
                 axios.post(this.endPoint, this.datas)
                 .then((res) => {
@@ -313,6 +326,7 @@ export default {
             for (var a = 0; a < keys.length; a++) {
                 this.datas[keys[a]] = dataEdit[keys[a]];
             }
+            CKEDITOR.instances.storyTextarea.setData(dataEdit.data)
 
             this.editableId = dataEdit.id;
             this.todo = 'Edit';
@@ -360,6 +374,9 @@ export default {
         handle_function_call(function_name) {
             this[function_name]()
         },
+    },
+    mounted(){
+        CKEDITOR.replace('storyTextarea')
     }
 };
 </script>
