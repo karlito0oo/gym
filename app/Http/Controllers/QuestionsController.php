@@ -3,10 +3,10 @@
 namespace App\Http\Controllers;
 
 use Auth;
-use App\Reading;
+use App\Question;
 use Illuminate\Http\Request;
 
-class ReadingsController extends Controller
+class QuestionsController extends Controller
 {
     /**
      * Create a new controller instance.
@@ -18,19 +18,15 @@ class ReadingsController extends Controller
         $this->middleware(['auth' => 'verified']);
     }
 
-
     public function validateData(Request $request){
         $temp = request()->validate(
             [
-                'title' => 'required',
-                'description' => 'required',
-                'data' => 'required',
-                'genre_id' => 'required',
-                'difficulty' => 'required',
-            ],
-            [
-                'genre_id.required' => 'The genre field is required.',
-                'data.required' => 'The story field is required.',
+                'question' => 'required',
+                'answer_1' => 'required',
+                'answer_2' => 'required',
+                'answer_3' => 'required',
+                'answer_4' => 'required',
+                'correct_answer' => 'required',
             ]
         );
     }
@@ -42,14 +38,14 @@ class ReadingsController extends Controller
     public function index(Request $request)
     {
         $user = Auth::user();
-        $columns = ['title', 'description', 'difficulty', 'genre_id', 'data'];
+        $columns = ['question', 'answer_1', 'answer_2', 'answer_3', 'answer_4', 'correct_answer', 'difficulty'];
 
         $length = $request->input('length');
         $column = $request->input('column'); //Index
         $dir = $request->input('dir');
         $searchValue = $request->input('search');
 
-        $query = Reading::select('*')->with('genre')
+        $query = Question::select('*')
         ->when($user->role_id == '3', function ($query) use ($user) {
             return $query->where('owner_id', $user->id);
         })
@@ -86,17 +82,16 @@ class ReadingsController extends Controller
     public function store(Request $request)
     {
         $user = Auth::user();
-        $this->validateData($request);
-
-        $data = new Reading();
-
-        $data->title = $request->title;
-        $data->description = $request->description;
-        $data->data = $request->data;
-        $data->genre_id = $request->genre_id;
+        $data = new Question();
+        $data->question = $request->question;
+        $data->answer_1 = $request->answer_1;
+        $data->answer_2 = $request->answer_2;
+        $data->answer_3 = $request->answer_3;
+        $data->answer_4 = $request->answer_4;
+        $data->correct_answer = $request->correct_answer;
         $data->difficulty = $request->difficulty;
+        
         $data->owner_id = $user->id;
-
         $data->save();
         return $data;
     }
@@ -135,12 +130,14 @@ class ReadingsController extends Controller
         
         $this->validateData($request);
 
-        $data = Reading::find($id);
+        $data = Question::find($id);
 
-        $data->title = $request->title;
-        $data->description = $request->description;
-        $data->data = $request->data;
-        $data->genre_id = $request->genre_id;
+        $data->question = $request->question;
+        $data->answer_1 = $request->answer_1;
+        $data->answer_2 = $request->answer_2;
+        $data->answer_3 = $request->answer_3;
+        $data->answer_4 = $request->answer_4;
+        $data->correct_answer = $request->correct_answer;
         $data->difficulty = $request->difficulty;
 
         return $data->save();
@@ -154,14 +151,20 @@ class ReadingsController extends Controller
      */
     public function destroy($id)
     {
-        return Reading::find($id)->delete();
+        return Question::find($id)->delete();
     }
 
     public function pageHome(){
         $user = Auth::user();
-        
-        return view('admin/readings', [
+        return view('admin/questions', [
             'user' => $user,
         ]);
+    }
+
+    public function fetch($type = null, $id = null){
+        return Question::all()
+        ->when($type == 'Instructor', function ($query) use ($id) {
+            return $query->where('owner_id', $id);
+        });
     }
 }

@@ -48,3 +48,8 @@ Route::patch('/api/students/updateSection/{id}', 'StudentsController@updateSecti
 Route::resource('/api/users', 'UsersController');
 Route::get('/home/users', 'UsersController@pageHome');
 Route::post('/api/users/fetch', 'UsersController@fetch');
+
+//Questions
+Route::resource('/api/questions', 'QuestionsController');
+Route::get('/home/questions', 'QuestionsController@pageHome');
+Route::post('/api/questions/fetch', 'QuestionsController@fetch');

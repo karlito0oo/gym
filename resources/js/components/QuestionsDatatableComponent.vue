@@ -5,7 +5,7 @@
     <div class="col-xs-12">
         <div class="card">
             <div class="card-header">
-                <h4 class="card-title">Section</h4>
+                <h4 class="card-title">Questions</h4>
                 <a class="heading-elements-toggle"><i class="icon-ellipsis font-medium-3"></i></a>
                 <div class="heading-elements">
                     <ul class="list-inline mb-0">
@@ -33,11 +33,13 @@
                 <datatable :columns="columns" :sortKey="sortKey" :sortOrders="sortOrders" @sort="sortBy">
                     <tbody>
                         <tr v-for="project in projects" :key="project.id">
-                            <td>{{project.name}}</td>
-                            <td>{{project.description}}</td>
-                            <td>{{project.instructor.lname}}, {{project.instructor.name}}</td>
+                            <td>{{project.question}}</td>
+                            <td :style="(project.correct_answer == 'answer_1' ? 'background-color: green; color:white; font-weight: bold;' : '')">{{project.answer_1}}</td>
+                            <td :style="(project.correct_answer == 'answer_2' ? 'background-color: green; color:white; font-weight: bold;' : '')">{{project.answer_2}}</td>
+                            <td :style="(project.correct_answer == 'answer_3' ? 'background-color: green; color:white; font-weight: bold;' : '')">{{project.answer_3}}</td>
+                            <td :style="(project.correct_answer == 'answer_4' ? 'background-color: green; color:white; font-weight: bold;' : '')">{{project.answer_4}}</td>
                             <td>
-                                <button class="btn btn-warning btn-sm" @click="deleteDataConfirm(project)" v-if="isAdmin"><span class="icon-android-delete"></span></button>
+                                <button class="btn btn-warning btn-sm" @click="deleteDataConfirm(project)"><span class="icon-android-delete"></span></button>
                                 <button class="btn btn-info btn-sm" @click="editData(project)"><span class="icon-edit"></span></button>
                             </td>
                         </tr>
@@ -56,7 +58,7 @@
 <!-- Modal -->
 <form class="form" @submit.prevent="saveData()">
 <div class="modal fade text-xs-left" id="dataModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel2" aria-hidden="true">
-    <div class="modal-dialog modal-md" role="document">
+    <div class="modal-dialog modal-lg" role="document">
     <div class="modal-content">
         <div class="modal-header">
             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -70,33 +72,61 @@
             <div class="card-body collapse in">
                 <div class="card-block">
                     
-                        <!-- Alerts -->
+                       <!-- Alerts -->
                         <div :class="'alert alert-'+notif.type +''" role="alert" v-show="notif.show">
                             <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                                 <span aria-hidden="true">×</span>
                             </button>
-                            <div v-html="notif.message"></div>
+                            <div><span v-html="notif.message"></span><span v-show="notif.confirm"> Click <a @click="handle_function_call(notif.function)" class="alert-link">here</a> to proceed.</span></div>
+                            
                         </div>
                         <div class="form-body">
-                            <h4 class="form-section"><i class="icon-folder4"></i> {{ todo }} Section</h4>
+                            <h4 class="form-section"><i class="icon-folder4"></i> {{ todo }} Question</h4>
 
                             <div class="form-group">
-                                <label for="userinput5">Name</label>
-                                <input class="form-control border-primary" type="text" placeholder="name" v-model="datas.name">
+                                <label for="userinput6">Difficulty</label>
+                                <select class="form-control border-primary" v-model="datas.difficulty">
+                                    <option value="">Select difficulty</option>
+                                    <option>Beginner</option>
+                                    <option>Intermediate</option>
+                                    <option>Advance</option>
+                                    <option>Expert</option>
+                                </select>
                             </div>
 
                             <div class="form-group">
-                                <label for="userinput6">Description</label>
-                                <input class="form-control border-primary" type="text" placeholder="Description" v-model="datas.description">
+                                <label for="userinput5">Question</label>
+                                <input class="form-control border-primary" type="text" placeholder="Question" v-model="datas.question">
                             </div>
 
-                            <div class="form-group" v-if="isAdmin">
-                                <label for="userinput6">Instructor</label>
-                                <select class="form-control border-primary" v-model="datas.instructor_id">
-                                    <option value="">Select Instructor</option>
-                                    <option v-for="instructor in instructors" :value="instructor.id" :key="instructor.id">
-                                        {{ instructor.lname }}, {{ instructor.name }}
-                                    </option>
+                            <div class="form-group">
+                                <label for="userinput6">Answer 1</label>
+                                <input class="form-control border-primary" type="text" placeholder="Description" v-model="datas.answer_1">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="userinput6">Answer 2</label>
+                                <input class="form-control border-primary" type="text" placeholder="Description" v-model="datas.answer_2">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="userinput6">Answer 3</label>
+                                <input class="form-control border-primary" type="text" placeholder="Description" v-model="datas.answer_3">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="userinput6">Answer 4</label>
+                                <input class="form-control border-primary" type="text" placeholder="Description" v-model="datas.answer_4">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="userinput6">Correct Answer</label>
+                                <select class="form-control border-primary" v-model="datas.correct_answer">
+                                    <option value="">Select Correct Answer</option>
+                                    <option value="answer_1">Answer 1</option>
+                                    <option value="answer_2">Answer 2</option>
+                                    <option value="answer_3">Answer 3</option>
+                                    <option value="answer_4">Answer 4</option>
                                 </select>
                             </div>
 
@@ -153,20 +183,18 @@ import Datatable from './Datatables.vue';
 import Pagination from './DatatablePagination.vue';
 export default {
     components: { datatable: Datatable, pagination: Pagination },
-    
-    props: ['user'],
-
     created() {
         this.getProjects();
-
     },
     data() {
         let sortOrders = {};
 
         let columns = [
-            { name: 'name', label: 'Name' },
-            { name: 'description', label: 'Description'},
-            { name: 'instructor_id', label: 'Instructor'},
+            { name: 'question', label: 'Question' },
+            { name: 'answer_1', label: 'Answer 1'},
+            { name: 'answer_2', label: 'Answer 2'},
+            { name: 'answer_3', label: 'Answer 3'},
+            { name: 'answer_4', label: 'Answer 4'},
         ];
 
         columns.forEach((column) => {
@@ -175,7 +203,7 @@ export default {
         return {
             projects: [],
             columns: columns,
-            sortKey: 'name',
+            sortKey: 'created_at',
             sortOrders: sortOrders,
             showActionTable: true,
             perPage: ['10', '20', '30'],
@@ -197,14 +225,18 @@ export default {
                 to: ''
             },
             datas: {
-                name: '',
-                description: '',
-                instructor_id: '',
+                question: '',
+                answer_1: '',
+                answer_2: '',
+                answer_3: '',
+                answer_4: '',
+                correct_answer: '',
+                difficulty: '',
 
             },
             todo: 'Add',
             editableId: '',
-            endPoint: '/api/sections/',
+            endPoint: '/api/questions/',
             notif: {
                 type: 'alert',
                 message: '<strong>Oh snap!</strong> Change a <a href="#" class="alert-link">few things up</a> and try submitting again.',
@@ -212,28 +244,12 @@ export default {
                 confirm: false,
                 function: '',
             },
+            notifTimeout: 5,
             errors: new Errors(),
-            instructors: this.fetchInstructors(),
-            isAdmin: true,
-            currentUser: JSON.parse(this.user),
-        }
-    },
-    mounted() {
-        if(this.currentUser.role_id == 3){
-            this.isAdmin = false;
-            this.datas.instructor_id = this.currentUser.id;
         }
     },
     methods: {
-        fetchInstructors(){
-            axios.post('/api/users/fetch/', {type: 'instructor'})
-            .then((res) => {
-                this.instructors = res.data
-            })
-            .catch((err) => {
-                console.log(err);
-            });
-        },
+
         showNotif(type, message){
             this.notif.type = type;
             this.notif.message = message;
@@ -358,6 +374,6 @@ export default {
         handle_function_call(function_name) {
             this[function_name]()
         },
-    }
+    },
 };
 </script>

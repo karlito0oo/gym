@@ -8,6 +8,16 @@ use Illuminate\Http\Request;
 
 class SectionsController extends Controller
 {
+    /**
+     * Create a new controller instance.
+     *
+     * @return void
+     */
+    public function __construct()
+    {
+        $this->middleware(['auth' => 'verified']);
+    }
+
     public function validateData(Request $request){
         $temp = request()->validate(
             [
@@ -24,6 +34,7 @@ class SectionsController extends Controller
      */
     public function index(Request $request)
     {
+        $user = Auth::user();
         $columns = ['name', 'description', 'instructor_id'];
 
         $length = $request->input('length');
@@ -31,7 +42,11 @@ class SectionsController extends Controller
         $dir = $request->input('dir');
         $searchValue = $request->input('search');
 
-        $query = Section::select('*')->with('instructor')->orderBy($columns[$column], $dir);
+        $query = Section::select('*')->with('instructor')
+        ->when($user->role_id == '3', function ($query) use ($user) {
+            return $query->where('instructor_id', $user->id);
+        })
+        ->orderBy($columns[$column], $dir);
 
         if ($searchValue) {
             $query->where(function($query) use ($searchValue, $columns) {
@@ -126,7 +141,10 @@ class SectionsController extends Controller
     }
 
     public function pageHome(){
-        return view('admin/sections');
+        $user = Auth::user();
+        return view('admin/sections', [
+            'user' => $user,
+        ]);
     }
 
     public function fetch($type = null, $id = null){

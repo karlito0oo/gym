@@ -31,6 +31,8 @@ Vue.component('sections-component', require('./components/SectionsDatatableCompo
 
 Vue.component('students-component', require('./components/StudentsDatatableComponent.vue').default);
 
+Vue.component('questions-component', require('./components/QuestionsDatatableComponent.vue').default);
+
 Vue.component('example-component', require('./components/ExampleComponent.vue').default);
 
 /**

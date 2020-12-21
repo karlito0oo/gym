@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class Reading extends Model
 {
     protected $fillable = [
-        'title', 'description', 'data', 'genre_id', 'difficulty',
+        'title', 'description', 'data', 'genre_id', 'difficulty', 'owner_id',
     ];
 
     public function genre()

@@ -1,7 +1,7 @@
-@extends('layouts.admin')
+@extends(($user->role_id == 3 ? "layouts.instructor" : "layouts.admin" ));
 
 @section('content')
 
-<sections-component></sections-component>
+<sections-component user="{{ $user }}"></sections-component>
 
 @endsection
