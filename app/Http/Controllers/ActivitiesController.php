@@ -3,12 +3,12 @@
 namespace App\Http\Controllers;
 
 use Auth;
-use App\Section;
+use App\Activity;
 use Illuminate\Http\Request;
 
-class SectionsController extends Controller
+class ActivitiesController extends Controller
 {
-    /**
+     /**
      * Create a new controller instance.
      *
      * @return void
@@ -19,13 +19,22 @@ class SectionsController extends Controller
     }
 
     public function validateData(Request $request){
-        $temp = request()->validate(
-            [
-                'name' => 'required',
-                'description' => 'required',
-                'instructor_id' => 'required',
-            ]
-        );
+        $validator = [
+            'name' => 'required',
+            'type' => 'required',
+            'dateStart' => 'required',
+            'dateEnd' => 'required',
+            'sections' => 'required',
+            'dateStartTime' => 'required',
+            'dateEndTime' => 'required',
+        ];
+        if($request->type == 'Reading Comprehension'){
+            $validator['readings'] = 'required';
+        }
+        else{
+            $validator['questions'] = 'required';
+        }
+        $temp = request()->validate($validator);
     }
     /**
      * Display a listing of the resource.
@@ -35,16 +44,19 @@ class SectionsController extends Controller
     public function index(Request $request)
     {
         $user = Auth::user();
-        $columns = ['name', 'description', 'instructor_id'];
+        $columns = ['name', 'type', 'dateStart', 'dateEnd'];
 
         $length = $request->input('length');
         $column = $request->input('column'); //Index
         $dir = $request->input('dir');
         $searchValue = $request->input('search');
 
-        $query = Section::select('*')->with('instructor')
+        $query = Activity::select('*')
+        ->with('sections')
+        ->with('questions')
+        ->with('readings')
         ->when($user->role_id == '3', function ($query) use ($user) {
-            return $query->where('instructor_id', $user->id);
+            return $query->where('owner_id', $user->id);
         })
         ->orderBy($columns[$column], $dir);
 
@@ -57,6 +69,7 @@ class SectionsController extends Controller
         }
 
         $projects = $query->paginate($length);
+
         return ['data' => $projects, 'draw' => $request->input('draw')];
     }
 
@@ -78,13 +91,33 @@ class SectionsController extends Controller
      */
     public function store(Request $request)
     {
+        $this->validateData($request);
+
         $user = Auth::user();
-        $section = new Section();
-        $section->name = $request->name;
-        $section->description = $request->description;
-        $section->owner_id = $user->id;
-        $section->save();
-        return $section;
+        $data = new Activity();
+        $data->name = $request->name;
+        $data->type = $request->type;
+        $data->dateStart = $request->dateStart;
+        $data->dateEnd = $request->dateEnd;
+        $data->owner_id = $user->id;
+        $data->dateStartTime = $request->dateStartTime;
+        $data->dateEndTime = $request->dateEndTime;
+        $data->save();
+        
+        $data->sections()->attach($request->sections);
+        
+        if($request->type == 'Reading Comprehension'){
+            $readings_id = array_column($request->readings, 'id');
+            $data->readings()->attach($readings_id);
+        }
+        else{
+            $questions = array_column($request->questions, 'id');
+            $data->questions()->attach($questions);
+        }
+        
+
+        
+        return $data;
     }
 
     /**
@@ -121,12 +154,28 @@ class SectionsController extends Controller
         
         $this->validateData($request);
 
-        $data = Section::find($id);
+        $data = Activity::find($id);
 
         $data->name = $request->name;
-        $data->description = $request->description;
+        $data->type = $request->type;
+        $data->dateStart = $request->dateStart;
+        $data->dateEnd = $request->dateEnd;
+        $data->dateStartTime = $request->dateStartTime;
+        $data->dateEndTime = $request->dateEndTime;
+        $data->save();
 
-        return $data->save();
+        $data->sections()->sync($request->sections);
+
+        if($request->type == 'Reading Comprehension'){
+            $readings_id = array_column($request->readings, 'id');
+            $data->readings()->sync($readings_id);
+        }
+        else{
+            $questions = array_column($request->questions, 'id');
+            $data->questions()->sync($questions);
+        }
+
+        return $data;
     }
 
     /**
@@ -137,22 +186,13 @@ class SectionsController extends Controller
      */
     public function destroy($id)
     {
-        return Section::find($id)->delete();
+        return Activity::find($id)->delete();
     }
 
     public function pageHome(){
         $user = Auth::user();
-        return view('admin/sections', [
+        return view('admin/activities', [
             'user' => $user,
         ]);
-    }
-
-    public function fetch(){
-        $user = Auth::user();
-        
-        return Section::all()
-        ->when($user->role_id == '3', function ($query) use ($user) {
-            return $query->where('instructor_id', $user->id);
-        });
     }
 }

@@ -33,6 +33,8 @@ Vue.component('students-component', require('./components/StudentsDatatableCompo
 
 Vue.component('questions-component', require('./components/QuestionsDatatableComponent.vue').default);
 
+Vue.component('activities-component', require('./components/ActivitiesDatatableComponent.vue').default);
+
 Vue.component('example-component', require('./components/ExampleComponent.vue').default);
 
 /**

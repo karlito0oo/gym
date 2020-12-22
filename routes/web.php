@@ -33,6 +33,7 @@ Route::post('/api/genres/fetch', 'GenresController@fetch');
 //Readings
 Route::resource('/api/readings', 'ReadingsController');
 Route::get('/home/readings', 'ReadingsController@pageHome');
+Route::post('/api/readings/fetch', 'ReadingsController@fetch');
 
 //Sections
 Route::resource('/api/sections', 'SectionsController');
@@ -53,3 +54,7 @@ Route::post('/api/users/fetch', 'UsersController@fetch');
 Route::resource('/api/questions', 'QuestionsController');
 Route::get('/home/questions', 'QuestionsController@pageHome');
 Route::post('/api/questions/fetch', 'QuestionsController@fetch');
+
+//Activities
+Route::resource('/api/activities', 'ActivitiesController');
+Route::get('/home/activities', 'ActivitiesController@pageHome');

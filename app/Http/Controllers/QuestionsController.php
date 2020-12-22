@@ -161,10 +161,12 @@ class QuestionsController extends Controller
         ]);
     }
 
-    public function fetch($type = null, $id = null){
+    public function fetch(){
+        $user = Auth::user();
+        
         return Question::all()
-        ->when($type == 'Instructor', function ($query) use ($id) {
-            return $query->where('owner_id', $id);
+        ->when($user->role_id == '3', function ($query) use ($user) {
+            return $query->where('owner_id', $user->id);
         });
     }
 }

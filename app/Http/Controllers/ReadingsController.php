@@ -53,6 +53,9 @@ class ReadingsController extends Controller
         ->when($user->role_id == '3', function ($query) use ($user) {
             return $query->where('owner_id', $user->id);
         })
+        ->when($user->role_id == '1', function ($query) use ($user) {
+            return $query->where('owner_id', $user->id);
+        })
         ->orderBy($columns[$column], $dir);
 
         if ($searchValue) {
@@ -163,5 +166,14 @@ class ReadingsController extends Controller
         return view('admin/readings', [
             'user' => $user,
         ]);
+    }
+
+    public function fetch(){
+        $user = Auth::user();
+        
+        return Reading::all()
+        ->when($user->role_id == '3', function ($query) use ($user) {
+            return $query->where('owner_id', $user->id);
+        });
     }
 }
