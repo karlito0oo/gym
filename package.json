@@ -24,6 +24,7 @@
         "vue-template-compiler": "^2.6.10"
     },
     "dependencies": {
+        "vue-moment": "^4.1.0",
         "vuejs-datetimepicker": "^1.1.13"
     }
 }

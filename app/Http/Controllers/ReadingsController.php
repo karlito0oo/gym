@@ -112,7 +112,7 @@ class ReadingsController extends Controller
      */
     public function show($id)
     {
-        //
+        
     }
 
     /**

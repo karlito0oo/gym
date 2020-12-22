@@ -51,12 +51,17 @@ class ActivitiesController extends Controller
         $dir = $request->input('dir');
         $searchValue = $request->input('search');
 
-        $query = Activity::select('*')
+        $query = Activity::select('activities.*')
         ->with('sections')
         ->with('questions')
         ->with('readings')
+        ->with('readers')
         ->when($user->role_id == '3', function ($query) use ($user) {
             return $query->where('owner_id', $user->id);
+        })
+        ->when($user->role_id == '1', function ($query) use ($user) {
+            return $query->join('activity_section', 'activities.id', '=', 'activity_section.activity_id')
+                ->where('activity_section.section_id', $user->section_id);
         })
         ->orderBy($columns[$column], $dir);
 
@@ -128,7 +133,22 @@ class ActivitiesController extends Controller
      */
     public function show($id)
     {
-        //
+        $user = Auth::user();
+        $activity = Activity::select('*')
+            ->with('questions')
+            ->with('readings')
+            ->where('id', $id)
+            ->first();
+
+        if($activity->type == 'Reading Comprehension'){
+            $activity->readers()->attach($user->id);
+            return view('student/reading-comprehension', [
+                'activity' => $activity,
+            ]);
+        }
+        else{
+            
+        }
     }
 
     /**

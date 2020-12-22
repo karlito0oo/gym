@@ -26,7 +26,7 @@
                     
                 </div>
                 <!-- Add button -->
-                <button type="button" class="btn btn-primary m-2" @click="dataModalOpen">
+                <button type="button" class="btn btn-primary m-2" @click="dataModalOpen" v-show="currentUser.role_id != '1'">
                     <i class="icon-plus"></i> ADD
                 </button>
 
@@ -35,14 +35,22 @@
                         <tr v-for="project in projects" :key="project.id">
                             <td>{{project.name}}</td>
                             <td>{{project.type}}</td>
-                            <td>{{project.dateStart}} {{project.dateStartTime}}</td>
-                            <td>{{project.dateEnd}} {{project.dateEndTime}}</td>
+                            <td>{{moment(project.dateStart + ' ' + project.dateStartTime).format('MMMM DD, YYYY LT')}}</td>
+                            <td>{{moment(project.dateEnd + ' ' + project.dateEndTime).format('MMMM DD, YYYY LT')}}</td>
                             <td>
                                 <li v-for="section in project.sections" :key="section.id">{{ section.name }}</li>
                             </td>
-                            <td>
+                            <!-- Admin or Instructor -->
+                            <td v-show="currentUser.role_id != '1'">
                                 <button class="btn btn-warning btn-sm" @click="deleteDataConfirm(project, 'activity')"><span class="icon-android-delete"></span></button>
                                 <button class="btn btn-info btn-sm" @click="editData(project)"><span class="icon-edit"></span></button>
+                            </td>
+                            <!-- Student -->
+                            <td v-show="currentUser.role_id == '1'">
+                                <a :href="'/api/activities/'+project.id" :class="'btn btn-success btn-sm ' + isDisabledLink(project)" v-show="project.type == 'Reading Comprehension'">
+                                    <span class="icon-book"></span> Read {{ (project.readers.length > 0 ? '(' + project.readers.length + ')' : '') }}
+                                </a>
+                                <button class="btn btn-success btn-sm" v-show="project.type != 'Reading Comprehension'"><span class="icon-android-clipboard"></span> Answer</button>
                             </td>
                         </tr>
                     </tbody>
@@ -230,7 +238,11 @@ import Pagination from './DatatablePagination.vue';
 import ActivityQuestion from './ActivityQuestionComponent.vue';
 import ActivityReadingComprehension from './ActivityReadingComprehensionComponent.vue';
 import datetime from 'vuejs-datetimepicker';
+var moment = require('moment');
 export default {
+    
+    props: ['user'],
+
     components: { datatable: Datatable, pagination: Pagination, datetime, 'reading-comprehension-table': ActivityReadingComprehension, 'activity-question': ActivityQuestion},
     created() {
         this.getProjects();
@@ -250,9 +262,10 @@ export default {
            sortOrders[column.name] = -1;
         });
         return {
+            moment: moment,
             projects: [],
             columns: columns,
-            sortKey: 'name',
+            sortKey: 'dateStart',
             sortOrders: sortOrders,
             showActionTable: true,
             perPage: ['10', '20', '30'],
@@ -302,9 +315,22 @@ export default {
             readings: this.readingsFetch(),
             questionToAdd: '',
             readingToAdd: '',
+            currentUser: JSON.parse(this.user),
         }
     },
     methods: {
+        isDisabledLink(project){
+            var currentDate = moment().format('YYYY-MM-DD HH:mm:ss');
+            var startDateTime = moment(project.dateStart + ' ' + project.dateStartTime).format('YYYY-MM-DD HH:mm:ss');
+            var endDateTime = moment(project.dateEnd + ' ' + project.dateEndTime).format('YYYY-MM-DD HH:mm:ss');
+            if(startDateTime <= currentDate && endDateTime >= currentDate){
+                return '';
+            }
+            else{
+                return 'disabled';
+            }
+        },
+
         containsObject(obj, list) {
             var x;
             for (x in list) {

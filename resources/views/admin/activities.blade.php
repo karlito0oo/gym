@@ -1,8 +1,7 @@
-@extends(($user->role_id == 3 ? "layouts.instructor" : "layouts.admin" ));
-
+@extends(($user->role_id == 3 ? "layouts.instructor" : ($user->role_id == 1 ? "layouts.student" : "layouts.admin") ));
 
 @section('content')
 
-<activities-component></activities-component>
+<activities-component user="{{ $user }}"></activities-component>
 
 @endsection

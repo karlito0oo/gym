@@ -178,7 +178,6 @@
             
             <li class="nav-item {{ collect(request()->segments())->last() == 'home' ? 'active' : ''}}"><a href="{{ url('/home') }}"><i class="icon-home"></i><span data-i18n="nav.form_layouts.form_layout_basic" class="menu-title">Dashboard</span></a>
             <li class="nav-item {{ collect(request()->segments())->last() == 'activities' ? 'active' : ''}}"><a href="{{ url('/home/activities') }}"><i class="icon-easel"></i><span data-i18n="nav.form_layouts.form_layout_basic" class="menu-title">Activities</span></a>
-            <li class="nav-item {{ collect(request()->segments())->last() == 'readings' ? 'active' : ''}}"><a href="{{ url('/home/readings') }}"><i class="icon-book"></i><span data-i18n="nav.form_layouts.form_layout_basic" class="menu-title">Reading Comprehesion</span></a>
             
             </ul>
         </div>

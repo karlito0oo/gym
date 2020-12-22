@@ -109,7 +109,7 @@
                                     <option value="">Select difficulty</option>
                                     <option>Beginner</option>
                                     <option>Intermediate</option>
-                                    <option>Advance</option>
+                                    <option>Advanced</option>
                                     <option>Expert</option>
                                 </select>
                             </div>
