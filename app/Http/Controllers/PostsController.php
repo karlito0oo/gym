@@ -2,10 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\User;
+use Auth;
+use App\Post;
 use Illuminate\Http\Request;
 
-class UsersController extends Controller
+class PostsController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -14,7 +15,18 @@ class UsersController extends Controller
      */
     public function index()
     {
-        //
+        $user = Auth::user();
+
+        return Post::select('posts.*')
+        ->with('posted_by')
+        ->with('for_user')
+        ->when($user->role_id == '1', function ($query) use ($user) {
+            $query->join('users', 'users.id', '=', 'posts.owner_id');
+            $query->where('users.section_id', $user->section_id);
+            return $query;
+        })
+        ->orderBy('created_at', 'desc')
+        ->get();
     }
 
     /**
@@ -35,7 +47,22 @@ class UsersController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $temp = request()->validate(
+            [
+                'body' => 'required',
+            ]
+        );
+
+        $user = Auth::user();
+
+        $data = new Post();
+        $data->body = $request->body;
+        $data->owner_id = $user->id;
+        $data->for_user_id = $request->for_user_id;
+        
+        $data->save();
+
+        return $data;
     }
 
     /**
@@ -46,6 +73,7 @@ class UsersController extends Controller
      */
     public function show($id)
     {
+        //
     }
 
     /**
@@ -82,10 +110,7 @@ class UsersController extends Controller
         //
     }
 
-    public function fetch(Request $request){
-        return User::all()
-        ->when($request->type == 'Instructor', function ($query) {
-            return $query->where('role_id', '3');
-        });
+    public function fetch(){
+        return Post::all();
     }
 }

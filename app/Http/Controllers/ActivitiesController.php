@@ -4,6 +4,9 @@ namespace App\Http\Controllers;
 
 use Auth;
 use App\Activity;
+use App\User;
+use App\Question;
+use App\ActivityUserAnswer;
 use Illuminate\Http\Request;
 
 class ActivitiesController extends Controller
@@ -56,6 +59,7 @@ class ActivitiesController extends Controller
         ->with('questions')
         ->with('readings')
         ->with('readers')
+        ->with('answered')
         ->when($user->role_id == '3', function ($query) use ($user) {
             return $query->where('owner_id', $user->id);
         })
@@ -147,7 +151,9 @@ class ActivitiesController extends Controller
             ]);
         }
         else{
-            
+            return view('student/answer-activity', [
+                'activity' => $activity,
+            ]);
         }
     }
 
@@ -214,5 +220,58 @@ class ActivitiesController extends Controller
         return view('admin/activities', [
             'user' => $user,
         ]);
+    }
+
+    public function submitAnswers(Request $request){
+        $user = Auth::user();
+        $activity_id = $request->activity_id;
+        $activity = Activity::find($activity_id);
+
+        unset($request['activity_id']);
+        unset($request['_token']);
+        //save answers
+        foreach($request->request as $key => $value){
+            $answerDetails = explode(',', $value);
+            $data = new ActivityUserAnswer();
+            $data->activity_id = $activity_id;
+            $data->question_id = $answerDetails[0];
+            $data->answer = $answerDetails[1];
+            $data->user_id = $user->id;
+            $data->save();
+        }
+        return $this->activityResult($activity_id, $user->id);
+    }
+
+    public function activityResult($activity_id, $user_id){
+        $user = User::find($user_id);
+        $activity = Activity::find($activity_id);
+        $result = $this->checkAnswers($activity_id, $user->id);
+        return view('student/activity-result', [
+            'user' => $user,
+            'result' => $result,
+            'activity' => $activity
+        ]);
+    }
+
+    public function checkAnswers($activity_id, $user_id){
+        $answers = ActivityUserAnswer::where('activity_id', $activity_id)
+                        ->where('user_id', $user_id)
+                        ->get();
+        $data['over'] = count($answers);
+        $data['score'] = 0;
+
+        foreach($answers as $answer){
+            $question = Question::find($answer->question_id);
+            if($question->correct_answer == $answer->answer){
+                $data['score']++;
+            }
+        }
+        
+        return $data;
+    }
+
+    public function isAnswered(Request $request){
+        $user = Auth::user();
+        return ActivityUserAnswer::where('activity_id', $request->id)->where('user_id', $user->id)->get();
     }
 }

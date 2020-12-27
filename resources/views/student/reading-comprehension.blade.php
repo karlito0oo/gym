@@ -2,6 +2,7 @@
 
 @section('content')
 
+<h2 class="content-header-title">{{ $activity->name }}</h2><br>
 @foreach($activity->readings as $reading)
     <section id="global-settings" class="card">
         <div class="card-header">
@@ -19,6 +20,8 @@
         <div class="card-body collapse in">
             <div class="card-block">
                 <div class="card-text">
+                    <small>Genre: {{ $reading->genre->name }}</small><br>
+                    <small>Difficulty: {{ $reading->difficulty }}</small><br>
                     <small>{{ $reading->description }}</small>
                     <br><br>
                     {!! $reading->data !!}

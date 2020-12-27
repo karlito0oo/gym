@@ -112,7 +112,7 @@
                     </li>
                     <li class="list-group scrollable-container"><a href="javascript:void(0)" class="list-group-item">
                         <div class="media">
-                            <div class="media-left"><span class="avatar avatar-sm avatar-online rounded-circle"><img src="{{ asset('template/robust/app-assets/images/portrait/small/avatar-s-1.png') }}" alt="avatar"><i></i></span></div>
+                            <div class="media-left"><span class="avatar avatar-sm avatar-online rounded-circle"><img src="{{ asset('images/' . ($user->profilePicture ? 'studentImage/' . $user->profilePicture : 'defaultuser.png')) }}" alt="avatar"><i></i></span></div>
                             <div class="media-body">
                             <h6 class="media-heading">Margaret Govan</h6>
                             <p class="notification-text font-small-3 text-muted">I like your portfolio, let's start the project.</p><small>
@@ -146,7 +146,7 @@
                     <li class="dropdown-menu-footer"><a href="javascript:void(0)" class="dropdown-item text-muted text-xs-center">Read all messages</a></li>
                     </ul>
                 </li>
-                <li class="dropdown dropdown-user nav-item"><a href="#" data-toggle="dropdown" class="dropdown-toggle nav-link dropdown-user-link"><span class="avatar avatar-online"><img src="{{ asset('template/robust/app-assets/images/portrait/small/avatar-s-1.png') }}" alt="avatar"><i></i></span><span class="user-name">John Doe</span></a>
+                <li class="dropdown dropdown-user nav-item"><a href="#" data-toggle="dropdown" class="dropdown-toggle nav-link dropdown-user-link"><span class="avatar avatar-online"><img src="{{ asset('images/' . ($user->profilePicture ? 'studentImage/' . $user->profilePicture : 'defaultuser.png')) }}" alt="avatar"><i></i></span><span class="user-name">John Doe</span></a>
                     <div class="dropdown-menu dropdown-menu-right"><a href="#" class="dropdown-item"><i class="icon-head"></i> Edit Profile</a>
                     <div class="dropdown-divider"></div><a  href="{{ route('logout') }}"
                                        onclick="event.preventDefault();
@@ -176,7 +176,7 @@
         <div class="main-menu-content">
             <ul id="main-menu-navigation" data-menu="menu-navigation" class="navigation navigation-main">
             
-            <li class="nav-item {{ collect(request()->segments())->last() == 'home' ? 'active' : ''}}"><a href="{{ url('/home') }}"><i class="icon-home"></i><span data-i18n="nav.form_layouts.form_layout_basic" class="menu-title">Dashboard</span></a>
+            <li class="nav-item {{ collect(request()->segments())->last() != 'activities' ? 'active' : ''}}"><a href="{{ url('/api/students/'.$user->id) }}"><i class="icon-user"></i><span data-i18n="nav.form_layouts.form_layout_basic" class="menu-title">My Profile</span></a>
             <li class="nav-item {{ collect(request()->segments())->last() == 'activities' ? 'active' : ''}}"><a href="{{ url('/home/activities') }}"><i class="icon-easel"></i><span data-i18n="nav.form_layouts.form_layout_basic" class="menu-title">Activities</span></a>
             
             </ul>
@@ -208,7 +208,6 @@
         </footer>
     </div>
         <script src="{{ asset('js/ckeditor/ckeditor.js') }}" type="text/javascript"></script>
-        <script src="{{ asset('js/app.js') }}"></script>
     <!-- BEGIN VENDOR JS-->
         <script src="{{ asset('template/robust/app-assets/js/core/libraries/jquery.min.js') }}" type="text/javascript"></script>
         <script src="{{ asset('template/robust/app-assets/vendors/js/ui/tether.min.js') }}" type="text/javascript"></script>
@@ -231,5 +230,6 @@
         <script src="{{ asset('template/robust/app-assets/js/scripts/pages/dashboard-lite.js') }}" type="text/javascript"></script>
         <script src="{{ asset('js/wordnik.js') }}" type="text/javascript"></script>
         <!-- END PAGE LEVEL JS-->
+        <script src="{{ asset('js/app.js') }}"></script>
   </body>
 </html>

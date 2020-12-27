@@ -2,10 +2,15 @@
 
 namespace App;
 
+use App\User;
 use App\Role;
+use App\Section;
+use App\Activity;
+use App\ActivityUserAnswer;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\DB;
 
 class User extends Authenticatable implements MustVerifyEmail
 {
@@ -38,6 +43,8 @@ class User extends Authenticatable implements MustVerifyEmail
         'email_verified_at' => 'datetime',
     ];
 
+    
+    protected $appends = ['instructor', 'answeredActivityCount', 'studentSameSectionCount', 'averageScore', 'upcomingActivityCount'];
 
     public function section(){
         return $this->hasOne('App\Section', 'id', 'section_id');
@@ -45,5 +52,49 @@ class User extends Authenticatable implements MustVerifyEmail
 
     public function role(){
         return $this->hasOne('App\Role', 'id', 'role_id');
+    }
+    
+    public function getInstructorAttribute(){
+        return User::select('users.*')
+            ->join('sections', 'sections.instructor_id', '=', 'users.id')
+            ->where('sections.id', $this->section_id)
+            ->first();
+    }
+
+    public function getansweredActivityCountAttribute(){
+        $data = ActivityUserAnswer::select('activity_id', 'user_id')
+            ->where('user_id', $this->id)
+            ->distinct()
+            ->get();
+        return count($data);
+    }
+
+    public function getstudentSameSectionCountAttribute(){
+        $data = User::
+            where('section_id', $this->section_id)
+            ->distinct()
+            ->get();
+        return count($data);
+    }
+
+    public function getaverageScoreAttribute(){
+        // $activities_id = ActivityUserAnswer::select('activity_id')
+        //     ->where('user_id', $this->id)
+        //     ->pluck('activity_id');
+
+        // $questions
+        // $data = User::
+        //     where('section_id', $this->section_id)
+        //     ->distinct()
+        //     ->get();
+        return '64.89';
+    }
+
+    public function getupcomingActivityCountAttribute(){
+        $dateToday =  date("Y-m-d h:i:s");
+        $data = Activity::
+            where(DB::raw("CONCAT(dateStart, ' ', dateStartTime)"), '>', $dateToday)
+            ->get();
+        return count($data);
     }
 }

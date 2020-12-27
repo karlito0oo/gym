@@ -58,3 +58,14 @@ Route::post('/api/questions/fetch', 'QuestionsController@fetch');
 //Activities
 Route::resource('/api/activities', 'ActivitiesController');
 Route::get('/home/activities', 'ActivitiesController@pageHome');
+Route::post('/home/activities/submit-answers', 'ActivitiesController@submitAnswers');
+Route::get('/home/activities/activity-result/{activity_id}/{user_id}', 'ActivitiesController@activityResult');
+Route::post('/api/activity/isAnswered', 'ActivitiesController@isAnswered');
+
+//Image upload
+Route::post('/api/uploadImage/{do}', 'ImageUploadController@index');
+
+//Questions
+Route::resource('/api/posts', 'PostsController');
+Route::get('/home/posts', 'PostsController@pageHome');
+Route::post('/api/posts/fetch', 'PostsController@fetch');

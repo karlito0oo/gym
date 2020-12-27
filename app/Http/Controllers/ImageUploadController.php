@@ -5,16 +5,39 @@ namespace App\Http\Controllers;
 use App\User;
 use Illuminate\Http\Request;
 
-class UsersController extends Controller
+class ImageUploadController extends Controller
 {
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request, $uploadTo)
     {
-        //
+        $exploded = explode(',', $request->profilePicture);
+
+        $decoded = base64_decode($exploded[1]);
+
+        if(str_contains($exploded[0], 'jpeg')){
+            $extension = 'jpg';
+        }
+        else{
+            $extension = 'png';
+        }
+
+        $fileName = rand() . '.' . $extension;
+
+        $path = public_path() . '/images/' . $uploadTo . '/' . $fileName;
+
+        file_put_contents($path, $decoded);
+
+        if($uploadTo == 'StudentImage'){
+            $user = User::find($request->id);
+            $user->profilePicture = $fileName;
+            $user->save();
+        }
+
+        return $fileName;
     }
 
     /**
@@ -46,6 +69,7 @@ class UsersController extends Controller
      */
     public function show($id)
     {
+        //
     }
 
     /**
@@ -80,12 +104,5 @@ class UsersController extends Controller
     public function destroy($id)
     {
         //
-    }
-
-    public function fetch(Request $request){
-        return User::all()
-        ->when($request->type == 'Instructor', function ($query) {
-            return $query->where('role_id', '3');
-        });
     }
 }

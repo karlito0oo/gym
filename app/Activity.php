@@ -39,4 +39,17 @@ class Activity extends Model
         }
         
     }
+    
+    public function answered(){
+        $user = Auth::user();
+        if($user->role_id == 1){
+            return  $this->belongsToMany('App\User', 'activity_user_answers', 'activity_id', 'user_id')
+            ->withTimestamps()
+            ->wherePivot('user_id', $user->id);
+        }
+        else{
+            return  $this->belongsToMany('App\User', 'activity_user_answers', 'activity_id', 'user_id')
+            ->withTimestamps();
+        }
+    }
 }

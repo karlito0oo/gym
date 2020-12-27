@@ -35,6 +35,8 @@ Vue.component('questions-component', require('./components/QuestionsDatatableCom
 
 Vue.component('activities-component', require('./components/ActivitiesDatatableComponent.vue').default);
 
+Vue.component('my-profile', require('./components/MyProfileComponent.vue').default);
+
 Vue.component('example-component', require('./components/ExampleComponent.vue').default);
 
 /**

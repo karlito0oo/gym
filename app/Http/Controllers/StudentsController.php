@@ -7,6 +7,14 @@ use Illuminate\Http\Request;
 
 class StudentsController extends Controller
 {
+    public function validateData(Request $request){
+        $validator = [
+            'name' => 'required',
+            'lname' => 'required',
+            'email' => 'required',
+        ];
+        $temp = request()->validate($validator);
+    }
     /**
      * Display a listing of the resource.
      *
@@ -71,7 +79,10 @@ class StudentsController extends Controller
      */
     public function show($id)
     {
-        //
+        $user = User::where('id', $id)->with('section')->first();
+        return view('student/profile', [
+            'user' => $user,
+        ]);
     }
 
     /**
@@ -94,7 +105,17 @@ class StudentsController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $this->validateData($request);
+
+        $student = User::find($id);
+        $student->name = $request->name;
+        $student->lname = $request->lname;
+        $student->birthday = $request->birthday;
+        $student->gender = $request->gender;
+        $student->email = $request->email;
+        $student->contactno = $request->contactno;
+
+        return $student->save();
     }
 
     /**

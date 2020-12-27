@@ -23,7 +23,6 @@
                         <span aria-hidden="true">×</span>
                     </button>
                     <div><span v-html="notif.message"></span><span v-show="notif.confirm"> Click <a @click="handle_function_call(notif.function)" class="alert-link">here</a> to proceed.</span></div>
-                    
                 </div>
                 <!-- Add button -->
                 <button type="button" class="btn btn-primary m-2" @click="dataModalOpen" v-show="currentUser.role_id != '1'">
@@ -50,7 +49,9 @@
                                 <a :href="'/api/activities/'+project.id" :class="'btn btn-success btn-sm ' + isDisabledLink(project)" v-show="project.type == 'Reading Comprehension'">
                                     <span class="icon-book"></span> Read {{ (project.readers.length > 0 ? '(' + project.readers.length + ')' : '') }}
                                 </a>
-                                <button class="btn btn-success btn-sm" v-show="project.type != 'Reading Comprehension'"><span class="icon-android-clipboard"></span> Answer</button>
+                                <a :href="(project.answered.length == 0 ? '/api/activities/'+project.id : '/home/activities/activity-result/'+project.id+'/'+currentUser.id)" :class="'btn btn-success btn-sm ' + isDisabledLink(project)" v-show="project.type != 'Reading Comprehension'">
+                                    <span class="icon-android-clipboard"></span> {{(project.answered.length == 0 ? 'Answer' : 'View Result')}}
+                                </a>
                             </td>
                         </tr>
                     </tbody>
@@ -319,6 +320,7 @@ export default {
         }
     },
     methods: {
+
         isDisabledLink(project){
             var currentDate = moment().format('YYYY-MM-DD HH:mm:ss');
             var startDateTime = moment(project.dateStart + ' ' + project.dateStartTime).format('YYYY-MM-DD HH:mm:ss');
@@ -327,7 +329,12 @@ export default {
                 return '';
             }
             else{
-                return 'disabled';
+                if(project.answered.length == 0){
+                    return 'disabled';
+                }
+                else{
+                    return '';
+                }
             }
         },
 

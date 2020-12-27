@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class ActivityQuestionPivotTable extends Migration
+class CreatePostsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,10 +13,13 @@ class ActivityQuestionPivotTable extends Migration
      */
     public function up()
     {
-        Schema::create('activity_question', function (Blueprint $table) {
+        Schema::create('posts', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('activity_id')->constrained();
-            $table->foreignId('question_id')->constrained();
+            $table->string('body');
+            $table->unsignedInteger('owner_id');
+            $table->unsignedInteger('for_user_id');
+            $table->timestamps();
+            $table->softdeletes();
         });
     }
 
@@ -27,6 +30,6 @@ class ActivityQuestionPivotTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('activity_question');
+        Schema::dropIfExists('posts');
     }
 }
