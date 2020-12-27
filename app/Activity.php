@@ -3,8 +3,10 @@
 namespace App;
 
 use Auth;
+use App\ActivitySection;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
 
 class Activity extends Model
 {
@@ -49,7 +51,16 @@ class Activity extends Model
         }
         else{
             return  $this->belongsToMany('App\User', 'activity_user_answers', 'activity_id', 'user_id')
-            ->withTimestamps();
+            ->withTimestamps()
+            ->distinct();
         }
+    }
+
+    public function takers(){
+        return DB::table('activity_section')
+            ->select('users.*')
+            ->where('activity_section.activity_id', $this->id)
+            ->join('users', 'users.section_id', 'activity_section.section_id')
+            ->get();
     }
 }

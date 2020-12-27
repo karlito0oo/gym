@@ -65,6 +65,9 @@ Route::post('/api/activity/isAnswered', 'ActivitiesController@isAnswered');
 //Image upload
 Route::post('/api/uploadImage/{do}', 'ImageUploadController@index');
 
+//Image upload
+Route::get('/home/messages/', 'MessagesController@pageHome');
+
 //Questions
 Route::resource('/api/posts', 'PostsController');
 Route::get('/home/posts', 'PostsController@pageHome');

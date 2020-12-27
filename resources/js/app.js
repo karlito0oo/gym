@@ -37,6 +37,8 @@ Vue.component('activities-component', require('./components/ActivitiesDatatableC
 
 Vue.component('my-profile', require('./components/MyProfileComponent.vue').default);
 
+Vue.component('calendar', require('./components/CalendarComponent.vue').default);
+
 Vue.component('example-component', require('./components/ExampleComponent.vue').default);
 
 /**
