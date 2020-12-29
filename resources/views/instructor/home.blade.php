@@ -110,7 +110,7 @@
                                         <li>{{ $section->name }}</li>
                                     @endforeach
                                 </td>
-                                <td>{{count($activity->answered)}} / {{count($activity->takers())}}</td>
+                                <td>{{count($activity->answered)}} / {{count($activity->takers)}}</td>
                             </tr>
                             @endforeach
                         </tbody>

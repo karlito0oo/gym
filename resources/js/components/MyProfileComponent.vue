@@ -25,10 +25,10 @@
                         <a class="nav-link active" id="active-tab" data-toggle="tab" href="#active" aria-controls="active" aria-expanded="true">Social Wall</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" id="myactivity-tab" data-toggle="tab" href="#myactivity" aria-controls="link">My Activity</a>
+                        <a class="nav-link" id="myactivity-tab" data-toggle="tab" href="#myactivity" aria-controls="link">{{(currentUser.id == currentViewingUser.id ? 'My Activity' : currentUser.name + ' Activity')}}</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" data-toggle="tab" href="#myaccount" aria-controls="linkOpt" id="myaccount-tab">My Account</a>
+                        <a class="nav-link" data-toggle="tab" href="#myaccount" aria-controls="linkOpt" id="myaccount-tab">{{(currentUser.id == currentViewingUser.id ? 'My Account' : currentUser.name + ' Account')}}</a>
                     </li>
                 </ul>
                 <div class="tab-content px-1 pt-1">
@@ -110,8 +110,8 @@
                                         <div class="card-block">
                                             <div class="media">
                                                 <div class="media-body text-xs-left">
-                                                    <h3 class="deep-orange">{{ currentUser.averageScore }} %</h3>
-                                                    <span>Average Score</span>
+                                                    <h3 class="deep-orange">{{ currentUser.postCount }}</h3>
+                                                    <span>Posts</span>
                                                 </div>
                                                 <div class="media-right media-middle">
                                                     <i class="icon-diagram deep-orange font-large-2 float-xs-right"></i>
@@ -145,6 +145,7 @@
                         <div class="card-body collapse in">
                         <div class="card-block">
                             <form class="form" @submit.prevent="updateProfile()">
+                                <fieldset :disabled="(currentUser.id == currentViewingUser.id ? false : true)">
                                 <div class="form-body">
                                     <h4 class="form-section"><i class="icon-head"></i> Personal Info</h4>
                                     <div class="row">
@@ -213,6 +214,7 @@
                                         <i class="icon-check2"></i> Update Profile
                                     </button>
                                 </div>
+                            </fieldset>
                             </form>
                         </div>
                     </div>
@@ -245,12 +247,13 @@ class Errors{
 }
 var moment = require('moment');
     export default {
-        props: ['user'],
+        props: ['user', 'viewer'],
         data() {
             return {
                 moment: moment,
                 errors: new Errors(),
                 currentUser: JSON.parse(this.user),
+                currentViewingUser: JSON.parse(this.viewer),
                 notif: {
                     type: 'alert',
                     message: '<strong>Oh snap!</strong> Change a <a href="#" class="alert-link">few things up</a> and try submitting again.',

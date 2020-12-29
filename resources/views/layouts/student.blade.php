@@ -178,6 +178,7 @@
             
             <li class="nav-item {{ collect(request()->segments())->last() != 'activities' ? 'active' : ''}}"><a href="{{ url('/api/students/'.$user->id) }}"><i class="icon-user"></i><span data-i18n="nav.form_layouts.form_layout_basic" class="menu-title">My Profile</span></a>
             <li class="nav-item {{ collect(request()->segments())->last() == 'activities' ? 'active' : ''}}"><a href="{{ url('/home/activities') }}"><i class="icon-easel"></i><span data-i18n="nav.form_layouts.form_layout_basic" class="menu-title">Activities</span></a>
+            <li class="nav-item {{ collect(request()->segments())->last() == 'students' ? 'active' : ''}}"><a href="{{ url('/home/students') }}"><i class="icon-android-contacts"></i><span data-i18n="nav.form_layouts.form_layout_basic" class="menu-title">Classmates</span></a>
             
             </ul>
         </div>

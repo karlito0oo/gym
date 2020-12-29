@@ -16,13 +16,14 @@ class PostsController extends Controller
     public function index()
     {
         $user = Auth::user();
-
         return Post::select('posts.*')
         ->with('posted_by')
         ->with('for_user')
         ->when($user->role_id == '1', function ($query) use ($user) {
             $query->join('users', 'users.id', '=', 'posts.owner_id');
             $query->where('users.section_id', $user->section_id);
+            $query->orwhere('posts.owner_id', $user->instructor->id);
+            
             return $query;
         })
         ->orderBy('created_at', 'desc')

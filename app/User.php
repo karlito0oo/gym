@@ -7,6 +7,7 @@ use App\Role;
 use App\Section;
 use App\Activity;
 use App\ActivityUserAnswer;
+use App\Post;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -44,7 +45,7 @@ class User extends Authenticatable implements MustVerifyEmail
     ];
 
     
-    protected $appends = ['instructor', 'answeredActivityCount', 'studentSameSectionCount', 'averageScore', 'upcomingActivityCount'];
+    protected $appends = ['instructor', 'answeredActivityCount', 'studentSameSectionCount', 'postCount', 'upcomingActivityCount', 'section'];
 
     public function section(){
         return $this->hasOne('App\Section', 'id', 'section_id');
@@ -77,17 +78,13 @@ class User extends Authenticatable implements MustVerifyEmail
         return count($data);
     }
 
-    public function getaverageScoreAttribute(){
-        // $activities_id = ActivityUserAnswer::select('activity_id')
-        //     ->where('user_id', $this->id)
-        //     ->pluck('activity_id');
+    public function getpostCountAttribute(){
+        $data = Post::
+        where('owner_id', $this->id)
+        ->distinct()
+        ->get();
 
-        // $questions
-        // $data = User::
-        //     where('section_id', $this->section_id)
-        //     ->distinct()
-        //     ->get();
-        return '64.89';
+        return count($data);
     }
 
     public function getupcomingActivityCountAttribute(){
@@ -96,5 +93,9 @@ class User extends Authenticatable implements MustVerifyEmail
             where(DB::raw("CONCAT(dateStart, ' ', dateStartTime)"), '>', $dateToday)
             ->get();
         return count($data);
+    }
+
+    public function getSectionAttribute(){
+        return Section::find($this->section_id);
     }
 }

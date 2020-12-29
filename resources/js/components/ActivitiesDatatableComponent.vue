@@ -43,6 +43,7 @@
                             <td v-show="currentUser.role_id != '1'">
                                 <button class="btn btn-warning btn-sm" @click="deleteDataConfirm(project, 'activity')"><span class="icon-android-delete"></span></button>
                                 <button class="btn btn-info btn-sm" @click="editData(project)"><span class="icon-edit"></span></button>
+                                <button class="btn btn-success btn-sm" @click="viewTakers(project)"><span class="icon-eye"></span></button>
                             </td>
                             <!-- Student -->
                             <td v-show="currentUser.role_id == '1'">
@@ -209,7 +210,7 @@
 </div>
 </form>
 
-
+    <activity-takers ref="ActivityTakers"></activity-takers>
 
     </div>
 </template>
@@ -238,13 +239,14 @@ import Datatable from './Datatables.vue';
 import Pagination from './DatatablePagination.vue';
 import ActivityQuestion from './ActivityQuestionComponent.vue';
 import ActivityReadingComprehension from './ActivityReadingComprehensionComponent.vue';
+import ActivityTakers from './ActivityTakersComponent.vue';
 import datetime from 'vuejs-datetimepicker';
 var moment = require('moment');
 export default {
     
     props: ['user'],
 
-    components: { datatable: Datatable, pagination: Pagination, datetime, 'reading-comprehension-table': ActivityReadingComprehension, 'activity-question': ActivityQuestion},
+    components: { datatable: Datatable, pagination: Pagination, datetime, 'reading-comprehension-table': ActivityReadingComprehension, 'activity-question': ActivityQuestion, 'activity-takers': ActivityTakers},
     created() {
         this.getProjects();
     },
@@ -320,6 +322,9 @@ export default {
         }
     },
     methods: {
+        viewTakers(activity){
+            this.$refs.ActivityTakers.reloadTakers(activity);
+        },
 
         isDisabledLink(project){
             var currentDate = moment().format('YYYY-MM-DD HH:mm:ss');

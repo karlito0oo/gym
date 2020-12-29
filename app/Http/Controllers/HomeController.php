@@ -37,9 +37,7 @@ class HomeController extends Controller
         }
         //get home page
         if($user->role->name == 'Student'){
-            return view('student/home', [
-                'user' => $user,
-            ]);
+            return redirect()->away(url('/api/students/' . $user->id));
         }
         elseif($user->role->name == 'Super Admin'){
             return view('admin/home', [

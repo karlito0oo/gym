@@ -29,14 +29,14 @@
                 <datatable :columns="columns" :sortKey="sortKey" :sortOrders="sortOrders" @sort="sortBy">
                     <tbody>
                         <tr v-for="project in projects" :key="project.id">
-                            <td>{{project.name}}</td>
-                            <td>{{project.lname}}</td>
+                            <td><a :href="'/api/students/' + project.id">{{project.lname}}, {{project.name}}</a></td>
                             <td>{{project.email}}</td>
                             <td>{{project.gender}}</td>
                             <td>{{(project.section ? project.section.name : 'N/A')}}</td>
                             <td>
-                                <button class="btn btn-warning btn-sm" @click="deleteDataConfirm(project)"><span class="icon-android-delete"></span></button>
-                                <button class="btn btn-info btn-sm" @click="editData(project)"><span class="icon-android-contacts"></span></button>
+                                <button class="btn btn-warning btn-sm" @click="deleteDataConfirm(project)" v-show="currentUser.role_id == 2"><span class="icon-android-delete"></span></button>
+                                <button class="btn btn-info btn-sm" v-show="currentUser.role_id != 1" @click="editData(project)"><span class="icon-android-contacts"></span></button>
+                                <a class="btn btn-info btn-sm" :href="'/api/students/' + project.id" v-show="currentUser.role_id == 1"><span class="icon-profile"> View Profile</span></a>
                             </td>
                         </tr>
                     </tbody>
@@ -141,6 +141,7 @@ class Errors{
 import Datatable from './Datatables.vue';
 import Pagination from './DatatablePagination.vue';
 export default {
+    props: ['user'],
     components: { datatable: Datatable, pagination: Pagination },
     created() {
         this.getProjects();
@@ -150,7 +151,6 @@ export default {
         let sortOrders = {};
 
         let columns = [
-            { name: 'name', label: 'Name' },
             { name: 'lname', label: 'Last name'},
             { name: 'email', label: 'Email'},
             { name: 'gender', label: 'Gender'},
@@ -161,6 +161,7 @@ export default {
            sortOrders[column.name] = -1;
         });
         return {
+            currentUser: JSON.parse(this.user),
             projects: [],
             columns: columns,
             sortKey: 'name',

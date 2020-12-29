@@ -2,6 +2,6 @@
 
 @section('content')
 
-<students-component></students-component>
+<students-component user="{{$user}}"></students-component>
 
 @endsection

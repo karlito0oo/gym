@@ -16,6 +16,8 @@ class Activity extends Model
         'name', 'type', 'dateStart', 'dateEnd', 'owner_id',
     ];
     
+    protected $appends = ['takers'];
+
     public function sections(){
         return $this->belongsToMany('App\Section');
     }
@@ -56,11 +58,12 @@ class Activity extends Model
         }
     }
 
-    public function takers(){
+    public function getTakersAttribute(){
         return DB::table('activity_section')
             ->select('users.*')
             ->where('activity_section.activity_id', $this->id)
             ->join('users', 'users.section_id', 'activity_section.section_id')
+            ->distinct()
             ->get();
     }
 }

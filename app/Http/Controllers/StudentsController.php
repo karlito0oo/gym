@@ -80,9 +80,11 @@ class StudentsController extends Controller
      */
     public function show($id)
     {
+        $viewer = Auth::user();
         $user = User::where('id', $id)->with('section')->first();
         return view('student/profile', [
             'user' => $user,
+            'viewer' => $viewer,
         ]);
     }
 
