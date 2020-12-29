@@ -23,6 +23,7 @@ class StudentsController extends Controller
      */
     public function index(Request $request)
     {
+        $user = Auth::user();
         $columns = ['name', 'lname', 'email', 'gender', 'section_id'];
 
         $length = $request->input('length');
@@ -30,10 +31,18 @@ class StudentsController extends Controller
         $dir = $request->input('dir');
         $searchValue = $request->input('search');
 
-        $query = User::select('*')
+        $query = User::select('users.*')
         ->with('section')
-        ->when($request['type'] == 'students', function ($query) use ($request) {
-            return $query->where('role_id', '1');
+        ->with('role')
+        ->when($user->role_id == 1, function ($query) use ($user) {
+            return $query->where('section_id', $user->id);
+        })
+        ->when($user->role_id == 3, function ($query) use ($user) {
+            
+            $query->join('sections', 'sections.id', '=', 'users.section_id');
+            $query->where('sections.instructor_id', $user->id);
+            
+            return $query;
         })
         ->orderBy($columns[$column], $dir);
 
@@ -150,6 +159,13 @@ class StudentsController extends Controller
         );
         $student = User::find($id);
         $student->section_id = $request->section_id;
+        $student->save();
+        return $student;
+    }
+
+    public function updateUserType(Request $request, $id){
+        $student = User::find($id);
+        $student->role_id = $request->user_type;
         $student->save();
         return $student;
     }

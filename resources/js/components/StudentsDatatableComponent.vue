@@ -5,7 +5,7 @@
     <div class="col-xs-12">
         <div class="card">
             <div class="card-header">
-                <h4 class="card-title">Students</h4>
+                <h4 class="card-title">{{(currentUser.role_id == 2 ? 'Users' : 'Students')}}</h4>
                 <a class="heading-elements-toggle"><i class="icon-ellipsis font-medium-3"></i></a>
                 <div class="heading-elements">
                     <ul class="list-inline mb-0">
@@ -34,8 +34,9 @@
                             <td>{{project.gender}}</td>
                             <td>{{(project.section ? project.section.name : 'N/A')}}</td>
                             <td>
-                                <button class="btn btn-warning btn-sm" @click="deleteDataConfirm(project)" v-show="currentUser.role_id == 2"><span class="icon-android-delete"></span></button>
-                                <button class="btn btn-info btn-sm" v-show="currentUser.role_id != 1" @click="editData(project)"><span class="icon-android-contacts"></span></button>
+                                <button class="btn btn-warning btn-sm" @click="deleteDataConfirm(project)" v-show="currentUser.role_id == 2"><span data-toggle="tooltip" data-placement="left" title="" data-original-title="Delete user" class="icon-android-delete"></span></button>
+                                <button class="btn btn-info btn-sm" v-show="currentUser.role_id != 1 && project.role_id == 1" @click="editData(project)"><span class="icon-android-contacts" data-toggle="tooltip" data-original-title="Hover Triggered" ></span></button>
+                                <button class="btn btn-info btn-sm" v-show="currentUser.role_id == 2" @click="changeType(project)"><span class="icon-android-people"></span></button>
                                 <a class="btn btn-info btn-sm" :href="'/api/students/' + project.id" v-show="currentUser.role_id == 1"><span class="icon-profile"> View Profile</span></a>
                             </td>
                         </tr>
@@ -85,6 +86,69 @@
                                     <option v-for="section in sections" :value="section.id" :key="section.id">
                                         [{{ section.name }}]  {{section.description}}
                                     </option>
+                                </select>
+                            </div>
+                            
+
+                        </div>
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+        </div>
+        <div class="modal-footer">
+            <div class="form-actions right">
+                <button type="button" class="btn btn-warning mr-1" data-dismiss="modal">
+                    <i class="icon-cross2"></i> Cancel
+                </button>
+                <button type="submit" class="btn btn-primary">
+                    <i class="icon-check2"></i> Save
+                </button>
+            </div>
+        </div>
+    </div>
+    </div>
+</div>
+</form>
+
+
+<!-- Modal -->
+<form class="form" @submit.prevent="changeUserType()">
+<div class="modal fade text-xs-left" id="changeUserTypeModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel2" aria-hidden="true">
+    <div class="modal-dialog modal-md" role="document">
+    <div class="modal-content">
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <div class="modal-body">
+<div class="row match-height">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-body collapse in">
+                <div class="card-block">
+                    
+                        <!-- Alerts -->
+                        <div :class="'alert alert-'+notif.type +''" role="alert" v-show="notif.show">
+                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                <span aria-hidden="true">×</span>
+                            </button>
+                            <div v-html="notif.message"></div>
+                        </div>
+                        <div class="form-body">
+                            <h4 class="form-section"><i class="icon-folder4"></i> Change User Type</h4>
+                            
+                            <div class="form-group">
+                                <label for="userinput6">User Type</label>
+                                <select class="form-control border-primary" v-model="datas.user_type" required>
+                                    <option value="">Select Section</option>
+                                    <option value="3">Instructor</option>
+                                    <option value="1">Student</option>
+                                    <option value="2">Super Admin</option>
                                 </select>
                             </div>
                             
@@ -189,6 +253,7 @@ export default {
             datas: {
                 section_id: '',
                 student_id: '',
+                user_type: '',
 
             },
             todo: 'Add',
@@ -206,6 +271,25 @@ export default {
         }
     },
     methods: {
+        changeType(user){
+            this.editableId = user.id;
+            this.datas.user_type = user.role_id;
+            $('#changeUserTypeModal').modal('show');
+        },
+        changeUserType(){
+                axios.patch(this.endPoint+'updateUserType/'+this.editableId, this.datas)
+                .then((res) => {
+                    this.showNotif('success', '<strong>Well done!</strong> You succefully updated user type.');
+                    this.getProjects();
+                    this.clearFields();
+                    $('#changeUserTypeModal').modal('hide');
+                })
+                .catch((err) => {
+                    this.errors.record(err.response.data);
+                    this.showNotif('warning', '<strong>Warning!</strong><br>' + this.errors.get('name'));
+                });
+            
+        },
         sectionsFetch(){
             axios.post('/api/sections/fetch')
             .then((res) => {

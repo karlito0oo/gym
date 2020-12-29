@@ -20936,6 +20936,70 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 var Errors = /*#__PURE__*/function () {
   function Errors() {
     _classCallCheck(this, Errors);
@@ -21022,7 +21086,8 @@ var Errors = /*#__PURE__*/function () {
       },
       datas: {
         section_id: '',
-        student_id: ''
+        student_id: '',
+        user_type: ''
       },
       todo: 'Add',
       editableId: '',
@@ -21039,24 +21104,46 @@ var Errors = /*#__PURE__*/function () {
     };
   },
   methods: {
-    sectionsFetch: function sectionsFetch() {
+    changeType: function changeType(user) {
+      this.editableId = user.id;
+      this.datas.user_type = user.role_id;
+      $('#changeUserTypeModal').modal('show');
+    },
+    changeUserType: function changeUserType() {
       var _this = this;
 
+      axios.patch(this.endPoint + 'updateUserType/' + this.editableId, this.datas).then(function (res) {
+        _this.showNotif('success', '<strong>Well done!</strong> You succefully updated user type.');
+
+        _this.getProjects();
+
+        _this.clearFields();
+
+        $('#changeUserTypeModal').modal('hide');
+      })["catch"](function (err) {
+        _this.errors.record(err.response.data);
+
+        _this.showNotif('warning', '<strong>Warning!</strong><br>' + _this.errors.get('name'));
+      });
+    },
+    sectionsFetch: function sectionsFetch() {
+      var _this2 = this;
+
       axios.post('/api/sections/fetch').then(function (res) {
-        _this.sections = res.data;
+        _this2.sections = res.data;
       })["catch"](function (err) {
         console.log(err);
       });
     },
     showNotif: function showNotif(type, message) {
-      var _this2 = this;
+      var _this3 = this;
 
       this.notif.type = type;
       this.notif.message = message;
       this.notif.show = true;
       setTimeout(function () {
-        _this2.notif.show = false;
-        _this2.notif.confirm = false;
+        _this3.notif.show = false;
+        _this3.notif.confirm = false;
       }, 5000);
     },
     clearFields: function clearFields() {
@@ -21074,29 +21161,29 @@ var Errors = /*#__PURE__*/function () {
       $('#dataModal').modal('show');
     },
     saveData: function saveData() {
-      var _this3 = this;
-
-      axios.patch(this.endPoint + 'updateSection/' + this.datas.student_id, this.datas).then(function (res) {
-        _this3.showNotif('success', '<strong>Well done!</strong> You succefully updated the data.');
-
-        _this3.getProjects();
-
-        _this3.clearFields();
-      })["catch"](function (err) {
-        _this3.errors.record(err.response.data);
-
-        _this3.showNotif('warning', '<strong>Warning!</strong><br>' + _this3.errors.get('name'));
-      });
-    },
-    dataDelete: function dataDelete() {
       var _this4 = this;
 
-      axios["delete"](this.endPoint + this.editableId).then(function (res) {
+      axios.patch(this.endPoint + 'updateSection/' + this.datas.student_id, this.datas).then(function (res) {
+        _this4.showNotif('success', '<strong>Well done!</strong> You succefully updated the data.');
+
         _this4.getProjects();
 
         _this4.clearFields();
+      })["catch"](function (err) {
+        _this4.errors.record(err.response.data);
 
-        _this4.showNotif('success', '<strong>Well done!</strong> You succefully deleted the data.');
+        _this4.showNotif('warning', '<strong>Warning!</strong><br>' + _this4.errors.get('name'));
+      });
+    },
+    dataDelete: function dataDelete() {
+      var _this5 = this;
+
+      axios["delete"](this.endPoint + this.editableId).then(function (res) {
+        _this5.getProjects();
+
+        _this5.clearFields();
+
+        _this5.showNotif('success', '<strong>Well done!</strong> You succefully deleted the data.');
       })["catch"](function (err) {
         console.log(err);
       });
@@ -21119,7 +21206,7 @@ var Errors = /*#__PURE__*/function () {
       $('#dataModal').modal('show');
     },
     getProjects: function getProjects() {
-      var _this5 = this;
+      var _this6 = this;
 
       this.tableData.draw++;
       axios.get(this.endPoint, {
@@ -21127,14 +21214,14 @@ var Errors = /*#__PURE__*/function () {
       }).then(function (response) {
         var data = response.data;
 
-        if (_this5.tableData.draw == data.draw) {
-          _this5.projects = data.data.data;
+        if (_this6.tableData.draw == data.draw) {
+          _this6.projects = data.data.data;
 
-          _this5.configPagination(data.data);
+          _this6.configPagination(data.data);
         }
 
-        if (_this5.pagination.total == 0) {
-          _this5.showNotif('warning', '<strong>Warning!</strong> No data found!.');
+        if (_this6.pagination.total == 0) {
+          _this6.showNotif('warning', '<strong>Warning!</strong> No data found!.');
         }
       })["catch"](function (errors) {
         console.log(errors);
@@ -87751,7 +87838,17 @@ var render = function() {
     _c("div", { staticClass: "row" }, [
       _c("div", { staticClass: "col-xs-12" }, [
         _c("div", { staticClass: "card" }, [
-          _vm._m(0),
+          _c("div", { staticClass: "card-header" }, [
+            _c("h4", { staticClass: "card-title" }, [
+              _vm._v(
+                _vm._s(_vm.currentUser.role_id == 2 ? "Users" : "Students")
+              )
+            ]),
+            _vm._v(" "),
+            _vm._m(0),
+            _vm._v(" "),
+            _vm._m(1)
+          ]),
           _vm._v(" "),
           _c(
             "div",
@@ -87772,7 +87869,7 @@ var render = function() {
                   attrs: { role: "alert" }
                 },
                 [
-                  _vm._m(1),
+                  _vm._m(2),
                   _vm._v(" "),
                   _c("div", [
                     _c("span", {
@@ -87873,7 +87970,17 @@ var render = function() {
                                 }
                               }
                             },
-                            [_c("span", { staticClass: "icon-android-delete" })]
+                            [
+                              _c("span", {
+                                staticClass: "icon-android-delete",
+                                attrs: {
+                                  "data-toggle": "tooltip",
+                                  "data-placement": "left",
+                                  title: "",
+                                  "data-original-title": "Delete user"
+                                }
+                              })
+                            ]
                           ),
                           _vm._v(" "),
                           _c(
@@ -87883,8 +87990,11 @@ var render = function() {
                                 {
                                   name: "show",
                                   rawName: "v-show",
-                                  value: _vm.currentUser.role_id != 1,
-                                  expression: "currentUser.role_id != 1"
+                                  value:
+                                    _vm.currentUser.role_id != 1 &&
+                                    project.role_id == 1,
+                                  expression:
+                                    "currentUser.role_id != 1 && project.role_id == 1"
                                 }
                               ],
                               staticClass: "btn btn-info btn-sm",
@@ -87896,9 +88006,34 @@ var render = function() {
                             },
                             [
                               _c("span", {
-                                staticClass: "icon-android-contacts"
+                                staticClass: "icon-android-contacts",
+                                attrs: {
+                                  "data-toggle": "tooltip",
+                                  "data-original-title": "Hover Triggered"
+                                }
                               })
                             ]
+                          ),
+                          _vm._v(" "),
+                          _c(
+                            "button",
+                            {
+                              directives: [
+                                {
+                                  name: "show",
+                                  rawName: "v-show",
+                                  value: _vm.currentUser.role_id == 2,
+                                  expression: "currentUser.role_id == 2"
+                                }
+                              ],
+                              staticClass: "btn btn-info btn-sm",
+                              on: {
+                                click: function($event) {
+                                  return _vm.changeType(project)
+                                }
+                              }
+                            },
+                            [_c("span", { staticClass: "icon-android-people" })]
                           ),
                           _vm._v(" "),
                           _c(
@@ -87980,7 +88115,7 @@ var render = function() {
               },
               [
                 _c("div", { staticClass: "modal-content" }, [
-                  _vm._m(2),
+                  _vm._m(3),
                   _vm._v(" "),
                   _c("div", { staticClass: "modal-body" }, [
                     _c("div", { staticClass: "row match-height" }, [
@@ -88003,7 +88138,7 @@ var render = function() {
                                   attrs: { role: "alert" }
                                 },
                                 [
-                                  _vm._m(3),
+                                  _vm._m(4),
                                   _vm._v(" "),
                                   _c("div", {
                                     domProps: {
@@ -88014,7 +88149,7 @@ var render = function() {
                               ),
                               _vm._v(" "),
                               _c("div", { staticClass: "form-body" }, [
-                                _vm._m(4),
+                                _vm._m(5),
                                 _vm._v(" "),
                                 _c("div", { staticClass: "form-group" }, [
                                   _c(
@@ -88097,7 +88232,159 @@ var render = function() {
                     ])
                   ]),
                   _vm._v(" "),
-                  _vm._m(5)
+                  _vm._m(6)
+                ])
+              ]
+            )
+          ]
+        )
+      ]
+    ),
+    _vm._v(" "),
+    _c(
+      "form",
+      {
+        staticClass: "form",
+        on: {
+          submit: function($event) {
+            $event.preventDefault()
+            return _vm.changeUserType()
+          }
+        }
+      },
+      [
+        _c(
+          "div",
+          {
+            staticClass: "modal fade text-xs-left",
+            attrs: {
+              id: "changeUserTypeModal",
+              tabindex: "-1",
+              role: "dialog",
+              "aria-labelledby": "myModalLabel2",
+              "aria-hidden": "true"
+            }
+          },
+          [
+            _c(
+              "div",
+              {
+                staticClass: "modal-dialog modal-md",
+                attrs: { role: "document" }
+              },
+              [
+                _c("div", { staticClass: "modal-content" }, [
+                  _vm._m(7),
+                  _vm._v(" "),
+                  _c("div", { staticClass: "modal-body" }, [
+                    _c("div", { staticClass: "row match-height" }, [
+                      _c("div", { staticClass: "col-md-12" }, [
+                        _c("div", { staticClass: "card" }, [
+                          _c("div", { staticClass: "card-body collapse in" }, [
+                            _c("div", { staticClass: "card-block" }, [
+                              _c(
+                                "div",
+                                {
+                                  directives: [
+                                    {
+                                      name: "show",
+                                      rawName: "v-show",
+                                      value: _vm.notif.show,
+                                      expression: "notif.show"
+                                    }
+                                  ],
+                                  class: "alert alert-" + _vm.notif.type + "",
+                                  attrs: { role: "alert" }
+                                },
+                                [
+                                  _vm._m(8),
+                                  _vm._v(" "),
+                                  _c("div", {
+                                    domProps: {
+                                      innerHTML: _vm._s(_vm.notif.message)
+                                    }
+                                  })
+                                ]
+                              ),
+                              _vm._v(" "),
+                              _c("div", { staticClass: "form-body" }, [
+                                _vm._m(9),
+                                _vm._v(" "),
+                                _c("div", { staticClass: "form-group" }, [
+                                  _c(
+                                    "label",
+                                    { attrs: { for: "userinput6" } },
+                                    [_vm._v("User Type")]
+                                  ),
+                                  _vm._v(" "),
+                                  _c(
+                                    "select",
+                                    {
+                                      directives: [
+                                        {
+                                          name: "model",
+                                          rawName: "v-model",
+                                          value: _vm.datas.user_type,
+                                          expression: "datas.user_type"
+                                        }
+                                      ],
+                                      staticClass:
+                                        "form-control border-primary",
+                                      attrs: { required: "" },
+                                      on: {
+                                        change: function($event) {
+                                          var $$selectedVal = Array.prototype.filter
+                                            .call(
+                                              $event.target.options,
+                                              function(o) {
+                                                return o.selected
+                                              }
+                                            )
+                                            .map(function(o) {
+                                              var val =
+                                                "_value" in o
+                                                  ? o._value
+                                                  : o.value
+                                              return val
+                                            })
+                                          _vm.$set(
+                                            _vm.datas,
+                                            "user_type",
+                                            $event.target.multiple
+                                              ? $$selectedVal
+                                              : $$selectedVal[0]
+                                          )
+                                        }
+                                      }
+                                    },
+                                    [
+                                      _c("option", { attrs: { value: "" } }, [
+                                        _vm._v("Select Section")
+                                      ]),
+                                      _vm._v(" "),
+                                      _c("option", { attrs: { value: "3" } }, [
+                                        _vm._v("Instructor")
+                                      ]),
+                                      _vm._v(" "),
+                                      _c("option", { attrs: { value: "1" } }, [
+                                        _vm._v("Student")
+                                      ]),
+                                      _vm._v(" "),
+                                      _c("option", { attrs: { value: "2" } }, [
+                                        _vm._v("Super Admin")
+                                      ])
+                                    ]
+                                  )
+                                ])
+                              ])
+                            ])
+                          ])
+                        ])
+                      ])
+                    ])
+                  ]),
+                  _vm._v(" "),
+                  _vm._m(10)
                 ])
               ]
             )
@@ -88112,37 +88399,37 @@ var staticRenderFns = [
     var _vm = this
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "card-header" }, [
-      _c("h4", { staticClass: "card-title" }, [_vm._v("Students")]),
-      _vm._v(" "),
-      _c("a", { staticClass: "heading-elements-toggle" }, [
-        _c("i", { staticClass: "icon-ellipsis font-medium-3" })
-      ]),
-      _vm._v(" "),
-      _c("div", { staticClass: "heading-elements" }, [
-        _c("ul", { staticClass: "list-inline mb-0" }, [
-          _c("li", [
-            _c("a", { attrs: { "data-action": "collapse" } }, [
-              _c("i", { staticClass: "icon-minus4" })
-            ])
-          ]),
-          _vm._v(" "),
-          _c("li", [
-            _c("a", { attrs: { "data-action": "reload" } }, [
-              _c("i", { staticClass: "icon-reload" })
-            ])
-          ]),
-          _vm._v(" "),
-          _c("li", [
-            _c("a", { attrs: { "data-action": "expand" } }, [
-              _c("i", { staticClass: "icon-expand2" })
-            ])
-          ]),
-          _vm._v(" "),
-          _c("li", [
-            _c("a", { attrs: { "data-action": "close" } }, [
-              _c("i", { staticClass: "icon-cross2" })
-            ])
+    return _c("a", { staticClass: "heading-elements-toggle" }, [
+      _c("i", { staticClass: "icon-ellipsis font-medium-3" })
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "heading-elements" }, [
+      _c("ul", { staticClass: "list-inline mb-0" }, [
+        _c("li", [
+          _c("a", { attrs: { "data-action": "collapse" } }, [
+            _c("i", { staticClass: "icon-minus4" })
+          ])
+        ]),
+        _vm._v(" "),
+        _c("li", [
+          _c("a", { attrs: { "data-action": "reload" } }, [
+            _c("i", { staticClass: "icon-reload" })
+          ])
+        ]),
+        _vm._v(" "),
+        _c("li", [
+          _c("a", { attrs: { "data-action": "expand" } }, [
+            _c("i", { staticClass: "icon-expand2" })
+          ])
+        ]),
+        _vm._v(" "),
+        _c("li", [
+          _c("a", { attrs: { "data-action": "close" } }, [
+            _c("i", { staticClass: "icon-cross2" })
           ])
         ])
       ])
@@ -88208,6 +88495,80 @@ var staticRenderFns = [
     return _c("h4", { staticClass: "form-section" }, [
       _c("i", { staticClass: "icon-folder4" }),
       _vm._v(" Assign Section")
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "modal-footer" }, [
+      _c("div", { staticClass: "form-actions right" }, [
+        _c(
+          "button",
+          {
+            staticClass: "btn btn-warning mr-1",
+            attrs: { type: "button", "data-dismiss": "modal" }
+          },
+          [
+            _c("i", { staticClass: "icon-cross2" }),
+            _vm._v(" Cancel\n                ")
+          ]
+        ),
+        _vm._v(" "),
+        _c(
+          "button",
+          { staticClass: "btn btn-primary", attrs: { type: "submit" } },
+          [
+            _c("i", { staticClass: "icon-check2" }),
+            _vm._v(" Save\n                ")
+          ]
+        )
+      ])
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "modal-header" }, [
+      _c(
+        "button",
+        {
+          staticClass: "close",
+          attrs: {
+            type: "button",
+            "data-dismiss": "modal",
+            "aria-label": "Close"
+          }
+        },
+        [_c("span", { attrs: { "aria-hidden": "true" } }, [_vm._v("×")])]
+      )
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c(
+      "button",
+      {
+        staticClass: "close",
+        attrs: {
+          type: "button",
+          "data-dismiss": "alert",
+          "aria-label": "Close"
+        }
+      },
+      [_c("span", { attrs: { "aria-hidden": "true" } }, [_vm._v("×")])]
+    )
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("h4", { staticClass: "form-section" }, [
+      _c("i", { staticClass: "icon-folder4" }),
+      _vm._v(" Change User Type")
     ])
   },
   function() {

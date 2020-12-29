@@ -177,19 +177,9 @@
             <ul id="main-menu-navigation" data-menu="menu-navigation" class="navigation navigation-main">
             
             <li class="nav-item {{ collect(request()->segments())->last() == 'home' ? 'active' : ''}}"><a href="{{ url('/home') }}"><i class="icon-home"></i><span data-i18n="nav.form_layouts.form_layout_basic" class="menu-title">Dashboard</span></a>
-            <li class="nav-item {{ collect(request()->segments())->last() == 'readings' ? 'active' : ''}}"><a href="{{ url('/home/readings') }}"><i class="icon-book"></i><span data-i18n="nav.form_layouts.form_layout_basic" class="menu-title">Reading Comprehesion</span></a>
-            <li class=" nav-item"><a href="#"><i class="icon-android-document"></i><span data-i18n="nav.page_layouts.main" class="menu-title">Data</span></a>
-                <ul class="menu-content">
-                    <li class="{{ collect(request()->segments())->last() == 'difficulties' ? 'active' : ''}}"><a href="{{ url('/home/difficulties') }}" data-i18n="nav.page_layouts.1_column" class="menu-item">Difficulties</a>
-                    </li>
-                    <li class="{{ collect(request()->segments())->last() == 'genres' ? 'active' : ''}}"><a href="{{ url('/home/genres') }}" data-i18n="nav.page_layouts.1_column" class="menu-item">Genres</a>
-                    </li>
-                    <li class="{{ collect(request()->segments())->last() == 'sections' ? 'active' : ''}}"><a href="{{ url('/home/sections') }}" data-i18n="nav.page_layouts.1_column" class="menu-item">Sections</a>
-                    </li>
-                    <li class="{{ collect(request()->segments())->last() == 'students' ? 'active' : ''}}"><a href="{{ url('/home/students') }}" data-i18n="nav.page_layouts.1_column" class="menu-item">Students</a>
-                    </li>
-                </ul>
-            </li>
+            <li class="nav-item {{ collect(request()->segments())->last() == 'sections' ? 'active' : ''}}"><a href="{{ url('/home/sections') }}"><i class="icon-ios-filing-outline"></i><span data-i18n="nav.form_layouts.form_layout_basic" class="menu-title">Sections</span></a>
+            <li class="nav-item {{ collect(request()->segments())->last() == 'students' ? 'active' : ''}}"><a href="{{ url('/home/students') }}"><i class="icon-ios-people"></i><span data-i18n="nav.form_layouts.form_layout_basic" class="menu-title">Users</span></a>
+            
             </ul>
         </div>
         <!-- /main menu content-->
@@ -221,6 +211,7 @@
         <script src="{{ asset('js/ckeditor/ckeditor.js') }}" type="text/javascript"></script>
         <script src="{{ asset('js/app.js') }}"></script>
     <!-- BEGIN VENDOR JS-->
+    <script src="{{ asset('template/robust/app-assets/js/scripts/tooltip/tooltip.js') }}" type="text/javascript"></script>
         <script src="{{ asset('template/robust/app-assets/js/core/libraries/jquery.min.js') }}" type="text/javascript"></script>
         <script src="{{ asset('template/robust/app-assets/vendors/js/ui/tether.min.js') }}" type="text/javascript"></script>
         <script src="{{ asset('template/robust/app-assets/js/core/libraries/bootstrap.min.js') }}" type="text/javascript"></script>

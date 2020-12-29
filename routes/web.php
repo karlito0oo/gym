@@ -44,6 +44,7 @@ Route::post('/api/sections/fetch', 'SectionsController@fetch');
 Route::resource('/api/students', 'StudentsController');
 Route::get('/home/students', 'StudentsController@pageHome');
 Route::patch('/api/students/updateSection/{id}', 'StudentsController@updateSection');
+Route::patch('/api/students/updateUserType/{id}', 'StudentsController@updateUserType');
 
 //Users
 Route::resource('/api/users', 'UsersController');
