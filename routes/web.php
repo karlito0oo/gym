@@ -68,7 +68,10 @@ Route::post('/api/uploadImage/{do}', 'ImageUploadController@index');
 //Image upload
 Route::get('/home/messages/', 'MessagesController@pageHome');
 
-//Questions
+//Post
 Route::resource('/api/posts', 'PostsController');
 Route::get('/home/posts', 'PostsController@pageHome');
 Route::post('/api/posts/fetch', 'PostsController@fetch');
+
+//Calendar
+Route::resource('/api/calendars', 'CalendarsController');

@@ -283,7 +283,7 @@ var moment = require('moment');
             submitPost(){
                 this.post.for_user_id = this.currentUser.id;
                 axios.post('/api/posts/', this.post)
-                .then((res) => {
+                .then((res) => { 
                     this.showNotif('success', '<strong>Well done!</strong> You succefully posted what\'s on your mind!.');
                     this.fetchSocialWall();
                     this.post.body = '';

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Auth;
 use App\User;
 use Illuminate\Http\Request;
 
@@ -130,7 +131,10 @@ class StudentsController extends Controller
     }
 
     public function pageHome(){
-        return view('admin/students');
+        $user = Auth::user();
+        return view('admin/students', [
+            'user' => $user,
+        ]);
     }
 
     public function updateSection(Request $request, $id){

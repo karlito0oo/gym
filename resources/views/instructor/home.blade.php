@@ -92,7 +92,7 @@
                                 <th>Name</th>
                                 <th>Type</th>
                                 <th>Sections</th>
-                                <th>Count</th>
+                                <th>Answered Student</th>
                             </tr>
                         </thead>
                         <tbody>
