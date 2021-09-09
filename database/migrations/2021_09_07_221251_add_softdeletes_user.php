@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class ActivitySectionPivotTable extends Migration
+class AddSoftdeletesUser extends Migration
 {
     /**
      * Run the migrations.
@@ -13,9 +13,8 @@ class ActivitySectionPivotTable extends Migration
      */
     public function up()
     {
-        Schema::create('activity_section', function (Blueprint $table) {
-            $table->foreignId('activity_id')->constrained();
-            $table->foreignId('section_id')->constrained();
+        Schema::table('users', function (Blueprint $table) {
+            $table->softDeletes();
         });
     }
 
@@ -26,6 +25,8 @@ class ActivitySectionPivotTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('activity_section');
+        Schema::table('users', function (Blueprint $table) {
+            $table->dropSoftDeletes();
+        });
     }
 }

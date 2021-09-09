@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use Auth;
 use App\Calendar;
+use App\User;
+use App\Http\Resources\CalendarResource;
 use Illuminate\Http\Request;
 
 class CalendarsController extends Controller
@@ -36,13 +38,10 @@ class CalendarsController extends Controller
     {
         $user = Auth::user();
 
-        $events = Calendar::
-        when($user->role_id == '3', function ($query) use ($user) {
-            return $query->where('owner_id', $user->id);
-        })
-        ->get();
+        $events = Calendar::all();
 
-        return $events;
+        return CalendarResource::collection($events);
+
     }
 
     /**
@@ -65,11 +64,43 @@ class CalendarsController extends Controller
     {
         $user = Auth::user();
         $calendar = new Calendar();
-        $calendar->title = $request->title;
+        $calendar->title = date('h:i a', strtotime($request->timeStart)) . ' - ' . date('h:i a', strtotime($request->timeEnd));
         $calendar->start = $request->start;
         $calendar->end = $request->end;
+        $calendar->timeStart = $request->timeStart;
+        $calendar->timeEnd = $request->timeEnd;
         $calendar->owner_id = $user->id;
+        $calendar->capacity = $request->capacity;
         $calendar->save();
+        return $calendar;
+    }
+
+    public function reserve(Request $request)
+    {
+        $user = Auth::user();
+        
+        $user->calendars()->attach($request->id, ['status' => 'pending']);
+
+        return $user;
+    }
+
+    public function cancel($id)
+    {
+        $user = Auth::user();
+        
+        $user->calendars()->detach($id);
+
+        return $user;
+    }
+
+    public function approve(Request $request)
+    {
+        $calendar = Calendar::find($request->id);
+
+        $user = User::find($request->user_id);
+
+        $calendar->users()->updateExistingPivot($user, array('status' => 'approved'), 'pending');
+
         return $calendar;
     }
 
@@ -81,7 +112,7 @@ class CalendarsController extends Controller
      */
     public function show($id)
     {
-        //
+        return new CalendarResource(Calendar::find($id));
     }
 
     /**
@@ -107,9 +138,12 @@ class CalendarsController extends Controller
         
         $calendar = Calendar::find($id);
 
-        $calendar->name = $request->title;
+        $calendar->title = date('h:i a', strtotime($request->timeStart)) . ' - ' . date('h:i a', strtotime($request->timeEnd));
         $calendar->start = $request->start;
         $calendar->end = $request->end;
+        $calendar->timeStart = $request->timeStart;
+        $calendar->timeEnd = $request->timeEnd;
+        $calendar->capacity = $request->capacity;
         $calendar->save();
 
         return $calendar->save();

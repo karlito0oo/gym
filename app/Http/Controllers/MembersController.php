@@ -6,7 +6,7 @@ use Auth;
 use App\User;
 use Illuminate\Http\Request;
 
-class StudentsController extends Controller
+class MembersController extends Controller
 {
     public function validateData(Request $request){
         $validator = [
@@ -24,7 +24,7 @@ class StudentsController extends Controller
     public function index(Request $request)
     {
         $user = Auth::user();
-        $columns = ['name', 'lname', 'email', 'gender', 'section_id'];
+        $columns = ['name', 'lname', 'email', 'gender'];
 
         $length = $request->input('length');
         $column = $request->input('column'); //Index
@@ -32,18 +32,7 @@ class StudentsController extends Controller
         $searchValue = $request->input('search');
 
         $query = User::select('users.*')
-        ->with('section')
         ->with('role')
-        ->when($user->role_id == 1, function ($query) use ($user) {
-            return $query->where('section_id', $user->id);
-        })
-        ->when($user->role_id == 3, function ($query) use ($user) {
-            
-            $query->join('sections', 'sections.id', '=', 'users.section_id');
-            $query->where('sections.instructor_id', $user->id);
-            
-            return $query;
-        })
         ->orderBy($columns[$column], $dir);
 
 
@@ -138,12 +127,12 @@ class StudentsController extends Controller
      */
     public function destroy($id)
     {
-        //
+        return User::find($id)->delete();
     }
 
     public function pageHome(){
         $user = Auth::user();
-        return view('admin/students', [
+        return view('admin/members', [
             'user' => $user,
         ]);
     }
@@ -164,9 +153,9 @@ class StudentsController extends Controller
     }
 
     public function updateUserType(Request $request, $id){
-        $student = User::find($id);
-        $student->role_id = $request->user_type;
-        $student->save();
-        return $student;
+        $user = User::find($id);
+        $user->role_id = $request->user_type;
+        $user->save();
+        return $user;
     }
 }

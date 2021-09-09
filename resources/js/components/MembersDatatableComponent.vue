@@ -5,7 +5,7 @@
     <div class="col-xs-12">
         <div class="card">
             <div class="card-header">
-                <h4 class="card-title">{{(currentUser.role_id == 2 ? 'Users' : 'Students')}}</h4>
+                <h4 class="card-title">Members</h4>
                 <a class="heading-elements-toggle"><i class="icon-ellipsis font-medium-3"></i></a>
                 <div class="heading-elements">
                     <ul class="list-inline mb-0">
@@ -32,12 +32,9 @@
                             <td><a :href="'/api/students/' + project.id">{{project.lname}}, {{project.name}}</a></td>
                             <td>{{project.email}}</td>
                             <td>{{project.gender}}</td>
-                            <td>{{(project.section ? project.section.name : 'N/A')}}</td>
                             <td>
-                                <button class="btn btn-warning btn-sm" @click="deleteDataConfirm(project)" v-show="currentUser.role_id == 2"><span data-toggle="tooltip" data-placement="left" title="" data-original-title="Delete user" class="icon-android-delete"></span></button>
-                                <button class="btn btn-info btn-sm" v-show="currentUser.role_id != 1 && project.role_id == 1" @click="editData(project)"><span class="icon-android-contacts" data-toggle="tooltip" data-original-title="Hover Triggered" ></span></button>
-                                <button class="btn btn-info btn-sm" v-show="currentUser.role_id == 2" @click="changeType(project)"><span class="icon-android-people"></span></button>
-                                <a class="btn btn-info btn-sm" :href="'/api/students/' + project.id" v-show="currentUser.role_id == 1"><span class="icon-profile"> View Profile</span></a>
+                                <button class="btn btn-warning btn-sm" @click="deleteDataConfirm(project)"><span data-toggle="tooltip" data-placement="left" title="" data-original-title="Delete user" class="icon-android-delete"></span></button>
+                                <button class="btn btn-info btn-sm" @click="changeType(project)"><span class="icon-android-people" data-toggle="tooltip" data-original-title="Change User Type" ></span></button>
                             </td>
                         </tr>
                     </tbody>
@@ -51,68 +48,6 @@
     </div>
 </div>
 
-
-<!-- Modal -->
-<form class="form" @submit.prevent="saveData()">
-<div class="modal fade text-xs-left" id="dataModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel2" aria-hidden="true">
-    <div class="modal-dialog modal-md" role="document">
-    <div class="modal-content">
-        <div class="modal-header">
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-            </button>
-        </div>
-        <div class="modal-body">
-<div class="row match-height">
-    <div class="col-md-12">
-        <div class="card">
-            <div class="card-body collapse in">
-                <div class="card-block">
-                    
-                        <!-- Alerts -->
-                        <div :class="'alert alert-'+notif.type +''" role="alert" v-show="notif.show">
-                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                                <span aria-hidden="true">×</span>
-                            </button>
-                            <div v-html="notif.message"></div>
-                        </div>
-                        <div class="form-body">
-                            <h4 class="form-section"><i class="icon-folder4"></i> Assign Section</h4>
-                            
-                            <div class="form-group">
-                                <label for="userinput6">Section</label>
-                                <select class="form-control border-primary" v-model="datas.section_id">
-                                    <option value="">Select Section</option>
-                                    <option v-for="section in sections" :value="section.id" :key="section.id">
-                                        [{{ section.name }}]  {{section.description}}
-                                    </option>
-                                </select>
-                            </div>
-                            
-
-                        </div>
-
-
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-        </div>
-        <div class="modal-footer">
-            <div class="form-actions right">
-                <button type="button" class="btn btn-warning mr-1" data-dismiss="modal">
-                    <i class="icon-cross2"></i> Cancel
-                </button>
-                <button type="submit" class="btn btn-primary">
-                    <i class="icon-check2"></i> Save
-                </button>
-            </div>
-        </div>
-    </div>
-    </div>
-</div>
-</form>
 
 
 <!-- Modal -->
@@ -146,9 +81,8 @@
                                 <label for="userinput6">User Type</label>
                                 <select class="form-control border-primary" v-model="datas.user_type" required>
                                     <option value="">Select Section</option>
-                                    <option value="3">Instructor</option>
-                                    <option value="1">Student</option>
-                                    <option value="2">Super Admin</option>
+                                    <option value="2">Member</option>
+                                    <option value="1">Super Admin</option>
                                 </select>
                             </div>
                             
@@ -209,16 +143,14 @@ export default {
     components: { datatable: Datatable, pagination: Pagination },
     created() {
         this.getProjects();
-
     },
     data() {
         let sortOrders = {};
 
         let columns = [
-            { name: 'lname', label: 'Last name'},
+            { name: 'lname', label: 'Name'},
             { name: 'email', label: 'Email'},
             { name: 'gender', label: 'Gender'},
-            { name: 'section_id', label: 'Section'},
         ];
 
         columns.forEach((column) => {
@@ -258,7 +190,7 @@ export default {
             },
             todo: 'Add',
             editableId: '',
-            endPoint: '/api/students/',
+            endPoint: '/api/members/',
             notif: {
                 type: 'alert',
                 message: '<strong>Oh snap!</strong> Change a <a href="#" class="alert-link">few things up</a> and try submitting again.',
@@ -279,7 +211,11 @@ export default {
         changeUserType(){
                 axios.patch(this.endPoint+'updateUserType/'+this.editableId, this.datas)
                 .then((res) => {
-                    this.showNotif('success', '<strong>Well done!</strong> You succefully updated user type.');
+                    Swal.fire(
+                        'Updated!',
+                        'You succefully updated user type.',
+                        'success'
+                    )
                     this.getProjects();
                     this.clearFields();
                     $('#changeUserTypeModal').modal('hide');
@@ -338,23 +274,36 @@ export default {
             
         },
 
-        dataDelete(){
-            axios.delete(this.endPoint+this.editableId)
-            .then((res) => {
-                this.getProjects();
-                this.clearFields();
-                this.showNotif('success', '<strong>Well done!</strong> You succefully deleted the data.');
-            })
-            .catch((err) => {
-                console.log(err); 
-            });
-        },
-
         deleteDataConfirm(data){
             this.notif.confirm = true;
             this.notif.function = 'dataDelete';
             this.editableId = data.id;
-            this.showNotif('warning', '<strong>Warning! </strong> You are about to delete data.');
+            Swal.fire({
+                title: 'Are you sure?',
+                text: "You won't be able to revert this!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes, delete it!'
+                }).then((result) => {
+                if (result.isConfirmed) {
+                    axios.delete(this.endPoint+this.editableId)
+                    .then((res) => {
+                        this.getProjects();
+                        this.clearFields();
+                    })
+                    .catch((err) => {
+                        console.log(err); 
+                    });
+
+                    Swal.fire(
+                    'Deleted!',
+                    'Your file has been deleted.',
+                    'success'
+                    )
+                }
+            })
         },
         editData(dataEdit){
 

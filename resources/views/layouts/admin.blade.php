@@ -7,13 +7,12 @@
     <meta name="description" content="Robust admin is super flexible, powerful, clean &amp; modern responsive bootstrap 4 admin template with unlimited possibilities.">
     <meta name="keywords" content="admin template, robust admin template, dashboard template, flat admin template, responsive admin template, web app">
     <meta name="author" content="PIXINVENT">
-    <title>Educational System</title>
+    <title>{{ env('APP_NAME') }}</title>
     <link rel="apple-touch-icon" sizes="60x60" href="{{ asset('template/robust/app-assets/images/ico/apple-icon-60.png') }}">
     <link rel="apple-touch-icon" sizes="76x76" href="{{ asset('template/robust/app-assets/images/ico/apple-icon-76.png') }}">
     <link rel="apple-touch-icon" sizes="120x120" href="{{ asset('template/robust/app-assets/images/ico/apple-icon-120.png') }}">
     <link rel="apple-touch-icon" sizes="152x152" href="{{ asset('template/robust/app-assets/images/ico/apple-icon-152.png') }}">
-    <link rel="shortcut icon" type="image/x-icon" href="{{ asset('template/robust/app-assets/images/ico/favicon.ico') }}">
-    <link rel="shortcut icon" type="image/png" href="{{ asset('template/robust/app-assets/images/ico/favicon-32.png') }}">
+    <link rel="shortcut icon" type="image/x-icon" href="{{ asset('template/Images/logo.ico') }}">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-touch-fullscreen" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
@@ -38,6 +37,7 @@
     <link rel="stylesheet" type="text/css" href="{{ asset('template/robust/assets/css/style.css') }}">
     <link rel="stylesheet" type="text/css" href="{{ asset('css/custom.css') }}">
     <!-- END Custom CSS-->
+    
   </head>
   <body data-open="click" data-menu="vertical-menu" data-col="2-columns" class="vertical-layout vertical-menu 2-columns  fixed-navbar">
     <div id="app">
@@ -47,7 +47,9 @@
             <div class="navbar-header">
             <ul class="nav navbar-nav">
                 <li class="nav-item mobile-menu hidden-md-up float-xs-left"><a class="nav-link nav-menu-main menu-toggle hidden-xs"><i class="icon-menu5 font-large-1"></i></a></li>
-                <li class="nav-item"><a href="index.html" class="navbar-brand nav-link"><img alt="branding logo" src="{{ asset('template/robust/app-assets/images/logo/robust-logo-light.png') }}" data-expand="{{ asset('template/robust/app-assets/images/logo/robust-logo-light.png') }}" data-collapse="{{ asset('template/robust/app-assets/images/logo/robust-logo-small.png') }}" class="brand-logo"></a></li>
+                <li class="nav-item"><a href="{{ url('/home') }}" class="navbar-brand nav-link">
+                    <img alt="branding logo" src="{{ asset('template/robust/app-assets/images/logo/robust-logo-light.png') }}" data-expand="{{ asset('template/robust/app-assets/images/logo/robust-logo-light.png') }}" data-collapse="{{ asset('template/robust/app-assets/images/logo/robust-logo-small.png') }}" class="brand-logo">
+                </a></li>
                 <li class="nav-item hidden-md-up float-xs-right"><a data-toggle="collapse" data-target="#navbar-mobile" class="nav-link open-navbar-container"><i class="icon-ellipsis pe-2x icon-icon-rotate-right-right"></i></a></li>
             </ul>
             </div>
@@ -58,7 +60,7 @@
                 </ul>
                 <ul class="nav navbar-nav float-xs-right">
                 
-                <li class="dropdown dropdown-notification nav-item"><a href="#" data-toggle="dropdown" class="nav-link nav-link-label"><i class="ficon icon-bell4"></i><span class="tag tag-pill tag-default tag-danger tag-default tag-up">5</span></a>
+                <!-- <li class="dropdown dropdown-notification nav-item"><a href="#" data-toggle="dropdown" class="nav-link nav-link-label"><i class="ficon icon-bell4"></i><span class="tag tag-pill tag-default tag-danger tag-default tag-up">5</span></a>
                     <ul class="dropdown-menu dropdown-menu-media dropdown-menu-right">
                     <li class="dropdown-menu-header">
                         <h6 class="dropdown-header m-0"><span class="grey darken-2">Notifications</span><span class="notification-tag tag tag-default tag-danger float-xs-right m-0">5 New</span></h6>
@@ -145,7 +147,7 @@
                         </div></a></li>
                     <li class="dropdown-menu-footer"><a href="javascript:void(0)" class="dropdown-item text-muted text-xs-center">Read all messages</a></li>
                     </ul>
-                </li>
+                </li> -->
                 <li class="dropdown dropdown-user nav-item"><a href="#" data-toggle="dropdown" class="dropdown-toggle nav-link dropdown-user-link"><span class="avatar avatar-online"><img src="{{ asset('template/robust/app-assets/images/portrait/small/avatar-s-1.png') }}" alt="avatar"><i></i></span><span class="user-name">{{ Auth::user()->name . ' ' . Auth::user()->lname }}</span></a>
                     <div class="dropdown-menu dropdown-menu-right"><a href="#" class="dropdown-item"><i class="icon-head"></i> Edit Profile</a>
                     <div class="dropdown-divider"></div><a  href="{{ route('logout') }}"
@@ -177,9 +179,10 @@
             <ul id="main-menu-navigation" data-menu="menu-navigation" class="navigation navigation-main">
             
             <li class="nav-item {{ collect(request()->segments())->last() == 'home' ? 'active' : ''}}"><a href="{{ url('/home') }}"><i class="icon-home"></i><span data-i18n="nav.form_layouts.form_layout_basic" class="menu-title">Dashboard</span></a>
-            <li class="nav-item {{ collect(request()->segments())->last() == 'sections' ? 'active' : ''}}"><a href="{{ url('/home/sections') }}"><i class="icon-ios-filing-outline"></i><span data-i18n="nav.form_layouts.form_layout_basic" class="menu-title">Sections</span></a>
-            <li class="nav-item {{ collect(request()->segments())->last() == 'students' ? 'active' : ''}}"><a href="{{ url('/home/students') }}"><i class="icon-ios-people"></i><span data-i18n="nav.form_layouts.form_layout_basic" class="menu-title">Users</span></a>
-            
+            <li class="nav-item {{ collect(request()->segments())->last() == 'schedules' ? 'active' : ''}}"><a href="{{ url('/home/schedules') }}"><i class="icon-ios-calendar"></i><span data-i18n="nav.form_layouts.form_layout_basic" class="menu-title">Schedules</span></a>
+            @if($user->role->name == 'admin')
+            <li class="nav-item {{ collect(request()->segments())->last() == 'members' ? 'active' : ''}}"><a href="{{ url('/home/members') }}"><i class="icon-ios-people"></i><span data-i18n="nav.form_layouts.form_layout_basic" class="menu-title">Users</span></a>
+            @endif
             </ul>
         </div>
         <!-- /main menu content-->
@@ -202,12 +205,13 @@
         </div>
         <!-- ////////////////////////////////////////////////////////////////////////////-->
 
-        <dictionary-component></dictionary-component>
+        <!-- <dictionary-component></dictionary-component> -->
 
         <footer class="footer footer-static footer-light navbar-border customFooter">
-        A WEB-BASED EDUCATIONAL APPLICATION FOR ACADEMIC ENGLISH READING FLUENCY AND COMPREHENSION
+        (C) 2021 SOUTH FITNESS GYM
         </footer>
     </div>
+        <script src="{{ asset('js/sweetalert2.all.min.js') }}"></script>
         <script src="{{ asset('js/ckeditor/ckeditor.js') }}" type="text/javascript"></script>
         <script src="{{ asset('js/app.js') }}"></script>
     <!-- BEGIN VENDOR JS-->

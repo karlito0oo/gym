@@ -36,39 +36,14 @@ class HomeController extends Controller
             abort(404);
         }
         //get home page
-        if($user->role->name == 'Student'){
-            return redirect()->away(url('/api/students/' . $user->id));
-        }
-        elseif($user->role->name == 'Super Admin'){
+        if($user->role->name == 'member'){
             return view('admin/home', [
                 'user' => $user,
             ]);
         }
-        elseif($user->role->name == 'Instructor'){
-
-            $data['activities'] = Activity::where('owner_id', $user->id)->get();
-
-            $data['students'] = Section::select('users.*')
-            ->where('instructor_id', $user->id)
-            ->join('users', 'users.section_id', '=', 'sections.id')
-            ->get();
-
-            $data['questions'] = Question::where('owner_id', $user->id)->get();
-
-            $data['readingComprehensions'] = Reading::where('owner_id', $user->id)->get();
-
-            $dateToday =  date("Y-m-d h:i:s");
-            $data['ongoingActivities'] = Activity::
-                where(DB::raw("CONCAT(dateStart, ' ', dateStartTime)"), '<=', $dateToday)
-                ->where(DB::raw("CONCAT(dateEnd, ' ', dateEndTime)"), '>=', $dateToday)
-                ->with('sections')
-                ->with('answered')
-                ->get();
-            
-
-            return view('instructor/home', [
+        elseif($user->role->name == 'admin'){
+            return view('admin/home', [
                 'user' => $user,
-                'data' => $data,
             ]);
         }
     }

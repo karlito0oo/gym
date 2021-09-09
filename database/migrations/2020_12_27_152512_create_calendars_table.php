@@ -18,6 +18,9 @@ class CreateCalendarsTable extends Migration
             $table->string('title');
             $table->date('start');
             $table->date('end');
+            $table->time('timeStart');
+            $table->time('timeEnd');
+            $table->integer('capacity');
             $table->unsignedInteger('owner_id');
             $table->timestamps();
             $table->softdeletes();

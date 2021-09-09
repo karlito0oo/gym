@@ -29,7 +29,7 @@ Vue.component('reading-component', require('./components/ReadingDatatableCompone
 
 Vue.component('sections-component', require('./components/SectionsDatatableComponent.vue').default);
 
-Vue.component('students-component', require('./components/StudentsDatatableComponent.vue').default);
+Vue.component('members-component', require('./components/MembersDatatableComponent.vue').default);
 
 Vue.component('questions-component', require('./components/QuestionsDatatableComponent.vue').default);
 

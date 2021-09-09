@@ -30,12 +30,18 @@
                         <div class="form-body">
                             <h4 class="form-section"><i class="icon-folder4"></i> {{ todo }} Event</h4>
 
-                            <div class="form-group">
+                            <!-- <div class="form-group">
                                 <label for="userinput5">Title</label>
-                                <input class="form-control border-primary" type="text" placeholder="name" v-model="event.title" required>
+                                <input readonly class="form-control border-primary" type="text" placeholder="name" v-model="event.title" required>
+                            </div> -->
+
+                            
+                            <div class="form-group">
+                                <label for="userinput5">Capacity</label>
+                                <input class="form-control border-primary" type="number" placeholder="name" v-model="event.capacity" required>
                             </div>
 
-                            <div class="row">
+                            <!-- <div class="row">
                                 <div class="col-md-6">
                                     <div class="form-group">
                                     <label for="userinput5">Date Start</label>
@@ -49,8 +55,48 @@
                                     <input class="form-control border-primary" type="date" placeholder="name" v-model="event.end" required>
                                     </div>
                                 </div>
-                            </div>
+                            </div> -->
                             
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                    <label for="userinput5">Time Start</label>
+                                    <input class="form-control border-primary" type="time" placeholder="name" v-model="event.timeStart" required>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                    <label for="userinput5">Time End</label>
+                                    <input class="form-control border-primary" type="time" placeholder="name" v-model="event.timeEnd" required>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row" v-if="editableId">
+                                <div class="table-responsive">
+                                    <table class="table">
+                                        <thead class="thead-inverse">
+                                            <tr>
+                                                <th>Name</th>
+                                                <th>Email</th>
+                                                <th>Action</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr v-for="user in event.users" :key="user.id">
+                                                <td>{{user.lname + ', ' + user.name}}</td>
+                                                <td>{{user.email}}</td>
+                                                <td>
+                                                    <a :class="'btn btn-success btn-sm ' + (user.pivot.status != 'pending' ? 'disabled' : '')" @click="approveReservation(user.id)"><span data-toggle="tooltip" data-placement="left" title="" data-original-title="Approve Reservation">Approve</span></a>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                        <slot></slot>
+                                    </table>
+                                </div>
+                            </div>
+
                         </div>
                 </div>
             </div>
@@ -83,11 +129,15 @@
 import FullCalendar from '@fullcalendar/vue'
 import dayGridPlugin from '@fullcalendar/daygrid'
 import interactionPlugin from '@fullcalendar/interaction'
-
 var moment = require('moment');
     export default {
         components: {
-            FullCalendar // make the <FullCalendar> tag available
+            FullCalendar, // make the <FullCalendar> tag available
+        },
+        props: {
+            user: {
+                type: Object
+            }
         },
         data() {
             return {
@@ -104,6 +154,11 @@ var moment = require('moment');
                     title: '',
                     start: '',
                     end: '',
+                    timeStart: '',
+                    timeEnd: '',
+                    capacity: 0,
+                    id: '',
+                    users: [],
                 },
                 todo: 'Add',
                 editableId: '',
@@ -123,6 +178,33 @@ var moment = require('moment');
                 this.notif.confirm = true;
                 this.notif.function = 'dataDelete';
                 this.showNotif('warning', '<strong>Warning! </strong> You are about to delete data.');
+                
+                Swal.fire({
+                    title: 'Are you sure?',
+                    text: "You won't be able to revert this!",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Yes, delete it!'
+                    }).then((result) => {
+                    if (result.isConfirmed) {
+                        axios.delete('/api/calendars/'+this.editableId)
+                        .then((res) => {
+                            this.fetchEvents();
+                            this.clearFields();
+                        })
+                        .catch((err) => {
+                            console.log(err); 
+                        });
+
+                        Swal.fire(
+                        'Deleted!',
+                        'Your file has been deleted.',
+                        'success'
+                        )
+                    }
+                })
             },
             dataDelete(){
                 axios.delete('/api/calendars/'+this.editableId)
@@ -138,7 +220,7 @@ var moment = require('moment');
             fetchEvents(){
                 axios.get('/api/calendars')
                 .then((res) => {
-                    this.calendarOptions.events = res.data;
+                    this.calendarOptions.events = res.data.data;
                 })
                 .catch((err) => {
                     console.log(err);
@@ -159,7 +241,13 @@ var moment = require('moment');
                 if(this.todo == 'Add'){
                     axios.post('/api/calendars/', this.event)
                     .then((res) => {
-                        this.showNotif('success', '<strong>Well done!</strong> You succefully saved an event.');
+                       
+                        Swal.fire(
+                            'Saved!',
+                            'You succefully added schedule.',
+                            'success'
+                        )
+
                         this.fetchEvents();
                         this.clearFields();
                     })
@@ -171,7 +259,13 @@ var moment = require('moment');
                 else if(this.todo == 'Edit'){
                     axios.patch('/api/calendars/'+this.editableId, this.event)
                     .then((res) => {
-                        this.showNotif('success', '<strong>Well done!</strong> You succefully updated the data.');
+                        
+                        Swal.fire(
+                            'Updated!',
+                            'You succefully updated schedule.',
+                            'success'
+                        )
+
                         this.fetchEvents();
                         this.clearFields();
                     })
@@ -184,28 +278,125 @@ var moment = require('moment');
                 
             },
 
+            approveReservation(user_id){
+                this.event.user_id = user_id;
+                axios.post('/api/calendars/approve/', this.event)
+                .then((res) => {
+                    this.fetchSelectedEvent();
+                    this.fetchEvents();
+                })
+                .catch((err) => {
+                    this.errors.record(err.response.data);
+                });
+                
+            },
+
             clearFields(){
                 this.todo = 'Add';
                 this.event.title = '';
                 this.event.start = '';
                 this.event.end = '';
+                this.event.timeStart = '';
+                this.event.timeEnd = '';
+                this.event.capacity = 0;
+                this.editableId = '';
             },
 
             addEvent(args){
-                console.log(args);
-                this.clearFields();
-                this.event.start = this.moment(args.start).format('YYYY-MM-DD');
-                this.event.end = this.moment(args.end).format('YYYY-MM-DD');
-                $('#dataModal').modal('show');
+                if(this.user.userRole == 'admin'){
+                    this.clearFields();
+                    this.event.start = this.moment(args.start).format('YYYY-MM-DD');
+                    this.event.end = this.moment(args.end).format('YYYY-MM-DD');
+                    $('#dataModal').modal('show');
+                }
+            },
+
+            fetchSelectedEvent(){
+                axios.get('/api/calendars/'+this.editableId)
+                .then((res) => {
+                    this.event = res.data.data
+                })
+                .catch((err) => {
+                    console.log(err);
+                });
             },
 
             showEvent(args){
-                this.todo = 'Edit';
                 this.event.title = args.event.title;
                 this.event.start = this.moment(args.event.start).format('YYYY-MM-DD');
                 this.event.end = (args.event.end == null ? this.moment(args.event.start).format('YYYY-MM-DD') : this.moment(args.event.end).format('YYYY-MM-DD'));
+                this.event.timeStart = args.event.timeStart;
+                this.event.timeEnd = args.event.timeEnd;
+                this.event.id = args.event.id;
                 this.editableId = args.event.id;
-                $('#dataModal').modal('show');
+
+                if(this.user.userRole == 'admin'){
+                    this.todo = 'Edit';
+                    this.fetchSelectedEvent();
+
+                    $('#dataModal').modal('show');
+                }
+                else if(this.user.userRole == 'member'){
+                    console.log(args.event);
+                    if(args.event.backgroundColor == '#2196f3'){
+                        Swal.fire({
+                            title: args.event.title,
+                            text: "Book this slot?",
+                            icon: 'default',
+                            showCancelButton: true,
+                            confirmButtonColor: '#3085d6',
+                            cancelButtonColor: '#d33',
+                            confirmButtonText: 'Yes, book it!'
+                            }).then((result) => {
+                            if (result.isConfirmed) {
+                                axios.post('/api/calendars/reserve', this.event)
+                                .then((res) => {
+                                    this.fetchEvents();
+                                })
+                                .catch((err) => {
+                                    console.log(err); 
+                                });
+
+                                Swal.fire(
+                                'Yehey!',
+                                'You successfully booked this slot.',
+                                'success'
+                                )
+                            }
+                        })
+                    }
+                    else if(args.event.backgroundColor == '#e91e62' || args.event.backgroundColor == '#4caf4f'){
+                        Swal.fire({
+                            title: args.event.title,
+                            text: "Cancel "+ (args.event.backgroundColor == '#e91e62' ? "booking" : "reservation") +" for this slot?",
+                            icon: 'default',
+                            showCancelButton: true,
+                            confirmButtonColor: '#3085d6',
+                            cancelButtonColor: '#d33',
+                            confirmButtonText: 'Yes, cancel it!'
+                            }).then((result) => {
+                            if (result.isConfirmed) {
+                                axios.get('/api/calendars/cancel/'+this.event.id)
+                                .then((res) => {
+                                    this.fetchEvents();
+                                })
+                                .catch((err) => {
+                                    console.log(err); 
+                                });
+
+                                Swal.fire(
+                                'Yehey!',
+                                'You successfully cancel '+ args.event.backgroundColor == '#e91e62' ? "booking" : "reservation" +' for this slot.',
+                                'success'
+                                )
+                            }
+                        })
+                    }
+                    
+                }
+                
+
+                
             },
             handle_function_call(function_name) {
                 this[function_name]()

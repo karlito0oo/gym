@@ -49,7 +49,7 @@
 		<div class="card border-grey border-lighten-3 px-2 py-2 m-0">
 			<div class="card-header no-border">
 				<div class="card-title text-xs-center">
-					<img src="{{ asset('template/robust/app-assets/images/logo/robust-logo-dark.png') }}" alt="branding logo">
+                    <img style="height: 150px; width: 160px;" src="{{ asset('template/Images/logo.jpg') }}" alt="branding logo">
 				</div>
 				<h6 class="card-subtitle line-on-side text-muted text-xs-center font-small-3 pt-2"><span>Create Account</span></h6>
 			</div>

@@ -21,47 +21,21 @@ Auth::routes(['verify' => true]);
 
 Route::get('/home', 'HomeController@index')->name('home');
 
-//difficulties
-Route::resource('/api/difficulties', 'DifficultiesController');
-Route::get('/home/difficulties', 'DifficultiesController@pageHome');
-
-//Genres
-Route::resource('/api/genres', 'GenresController');
-Route::get('/home/genres', 'GenresController@pageHome');
-Route::post('/api/genres/fetch', 'GenresController@fetch');
-
-//Readings
-Route::resource('/api/readings', 'ReadingsController');
-Route::get('/home/readings', 'ReadingsController@pageHome');
-Route::post('/api/readings/fetch', 'ReadingsController@fetch');
-
-//Sections
-Route::resource('/api/sections', 'SectionsController');
-Route::get('/home/sections', 'SectionsController@pageHome');
-Route::post('/api/sections/fetch', 'SectionsController@fetch');
-
-//Students
-Route::resource('/api/students', 'StudentsController');
-Route::get('/home/students', 'StudentsController@pageHome');
-Route::patch('/api/students/updateSection/{id}', 'StudentsController@updateSection');
-Route::patch('/api/students/updateUserType/{id}', 'StudentsController@updateUserType');
+//members
+Route::resource('/api/members', 'MembersController');
+Route::get('/home/members', 'MembersController@pageHome');
+Route::patch('/api/members/updateSection/{id}', 'MembersController@updateSection');
+Route::patch('/api/members/updateUserType/{id}', 'MembersController@updateUserType');
 
 //Users
 Route::resource('/api/users', 'UsersController');
 Route::get('/home/users', 'UsersController@pageHome');
 Route::post('/api/users/fetch', 'UsersController@fetch');
 
-//Questions
-Route::resource('/api/questions', 'QuestionsController');
-Route::get('/home/questions', 'QuestionsController@pageHome');
-Route::post('/api/questions/fetch', 'QuestionsController@fetch');
-
-//Activities
-Route::resource('/api/activities', 'ActivitiesController');
-Route::get('/home/activities', 'ActivitiesController@pageHome');
-Route::post('/home/activities/submit-answers', 'ActivitiesController@submitAnswers');
-Route::get('/home/activities/activity-result/{activity_id}/{user_id}', 'ActivitiesController@activityResult');
-Route::post('/api/activity/isAnswered', 'ActivitiesController@isAnswered');
+//SchedulesController
+Route::resource('/api/schedules', 'SchedulesController');
+Route::get('/home/schedules', 'SchedulesController@pageHome');
+Route::post('/api/schedules/fetch', 'SchedulesController@fetch');
 
 //Image upload
 Route::post('/api/uploadImage/{do}', 'ImageUploadController@index');
@@ -69,10 +43,8 @@ Route::post('/api/uploadImage/{do}', 'ImageUploadController@index');
 //Image upload
 Route::get('/home/messages/', 'MessagesController@pageHome');
 
-//Post
-Route::resource('/api/posts', 'PostsController');
-Route::get('/home/posts', 'PostsController@pageHome');
-Route::post('/api/posts/fetch', 'PostsController@fetch');
-
 //Calendar
 Route::resource('/api/calendars', 'CalendarsController');
+Route::post('/api/calendars/reserve', 'CalendarsController@reserve');
+Route::post('/api/calendars/approve', 'CalendarsController@approve');
+Route::get('/api/calendars/cancel/{id}', 'CalendarsController@cancel');

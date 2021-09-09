@@ -49,9 +49,9 @@
         <div class="card border-grey border-lighten-3 m-0">
             <div class="card-header no-border">
                 <div class="card-title text-xs-center">
-                    <div class="p-1"><img src="{{ asset('template/robust/app-assets/images/logo/robust-logo-dark.png') }}" alt="branding logo"></div>
+                    <div class="p-1"><img style="height: 150px; width: 160px;" src="{{ asset('template/Images/logo.jpg') }}" alt="branding logo"></div>
                 </div>
-                <h6 class="card-subtitle line-on-side text-muted text-xs-center font-small-3 pt-2"><span>EDUCATIONAL APPLICATION</span></h6>
+                <h6 class="card-subtitle line-on-side text-muted text-xs-center font-small-3 pt-2"><span>{{ env('APP_NAME') }}</span></h6>
             </div>
             <div class="card-body collapse in">
                 <div class="card-block">

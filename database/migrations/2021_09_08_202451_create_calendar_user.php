@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateReadingsTable extends Migration
+class CreateCalendarUser extends Migration
 {
     /**
      * Run the migrations.
@@ -13,14 +13,11 @@ class CreateReadingsTable extends Migration
      */
     public function up()
     {
-        Schema::create('readings', function (Blueprint $table) {
+        Schema::create('calendar_user', function (Blueprint $table) {
             $table->id();
-            $table->string('title');
-            $table->string('description');
-            $table->longText('data');
-            $table->unsignedInteger('genre_id');
-            $table->string('difficulty');
-            $table->unsignedInteger('owner_id');
+            $table->foreignId('calendar_id')->constrained();
+            $table->foreignId('user_id')->constrained();
+            $table->string('status');
             $table->timestamps();
         });
     }
@@ -32,6 +29,6 @@ class CreateReadingsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('readings');
+        Schema::dropIfExists('calendar_user');
     }
 }
