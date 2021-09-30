@@ -18,12 +18,22 @@
             </div>
             <div class="card-body collapse in">
                 <!-- Alerts -->
-                <div :class="'alert alert-'+notif.type +''" role="alert" v-show="notif.show">
-                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                        <span aria-hidden="true">×</span>
-                    </button>
-                    <div><span v-html="notif.message"></span><span v-show="notif.confirm"> Click <a @click="handle_function_call(notif.function)" class="alert-link">here</a> to proceed.</span></div>
-                    
+                <br>
+                <div class="row pl-2 pr-2">
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <input type="text" class="form-control has-feedback-right" placeholder="Search" v-model="tableData.search" @input="getProjects()">
+                            <span class="fa fa-search form-control-feedback right" aria-hidden="true"></span>
+                        </div>
+                    </div>
+                    <div class="col-md-1">
+                        <div class="form-group">
+                            <select class="form-control" id="gender" v-model="tableData.length" @change="getProjects()">
+                                <option disabled value = "" selected>Paginate by</option>
+                                <option v-for="(records, index) in perPage" :key="index" :value="records">{{records}}</option>
+                            </select>
+                        </div>
+                    </div>
                 </div>
 
                 <datatable :columns="columns" :sortKey="sortKey" :sortOrders="sortOrders" @sort="sortBy">
@@ -139,6 +149,7 @@ class Errors{
 
 import Datatable from './Datatables.vue';
 import Pagination from './DatatablePagination.vue';
+import moment from 'moment';
 export default {
     props: ['user'],
     components: { datatable: Datatable, pagination: Pagination },
@@ -282,7 +293,7 @@ export default {
                 this.userAttendance = res.data
 
                 Swal.fire({
-                    title: 'What do you want to do?',
+                    title: 'What do you want to do?<br>' +moment().format("hh:mm A"),
                     showDenyButton: true,
                     confirmButtonText: 'Time In',
                     denyButtonText: `Time Out`,
