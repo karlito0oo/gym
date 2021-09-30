@@ -35,6 +35,7 @@
                             <td>
                                 <button class="btn btn-warning btn-sm" @click="deleteDataConfirm(project)"><span data-toggle="tooltip" data-placement="left" title="" data-original-title="Delete user" class="icon-android-delete"></span></button>
                                 <button class="btn btn-info btn-sm" @click="changeType(project)"><span class="icon-android-people" data-toggle="tooltip" data-original-title="Change User Type" ></span></button>
+                                <button v-if="project.userRole != 'admin'" class="btn btn-success btn-sm" @click="timeInOut(project)"><span data-toggle="tooltip" data-placement="left" title="" data-original-title="Time In/Out" class="icon-hourglass"></span></button>
                             </td>
                         </tr>
                     </tbody>
@@ -200,6 +201,7 @@ export default {
             },
             errors: new Errors(),
             sections: this.sectionsFetch(),
+            userAttendance: {},
         }
     },
     methods: {
@@ -272,6 +274,53 @@ export default {
                     this.showNotif('warning', '<strong>Warning!</strong><br>' + this.errors.get('name'));
                 });
             
+        },
+
+        timeInOut(data){
+             axios.post('/api/attendances/userAttendanceToday', data)
+            .then((res) => {
+                this.userAttendance = res.data
+
+                Swal.fire({
+                    title: 'What do you want to do?',
+                    showDenyButton: true,
+                    confirmButtonText: 'Time In',
+                    denyButtonText: `Time Out`,
+                    //denyButtonColor: '#0000FF',
+                    didOpen: () => {
+                        if(this.userAttendance){
+                            $(".swal2-confirm").prop('disabled', true);
+                            $(".swal2-deny").prop('disabled', false);
+                        }
+                        else{
+                            $(".swal2-confirm").prop('disabled', false);
+                            $(".swal2-deny").prop('disabled', true);
+                        }
+                    },
+                    }).then((result) => {
+                    /* Read more about isConfirmed, isDenied below */
+                    if (result.isConfirmed) {
+                         axios.post('/api/attendances/timeInOut', {'action': 'timeIn', 'user_id': data.id})
+                        .then((res) => {
+                            Swal.fire('Saved', '', 'success')
+                        })
+                        .catch((err) => {
+                            console.log(err);
+                        });
+                    } else if (result.isDenied) {
+                        axios.post('/api/attendances/timeInOut', {'action': 'timeOut', 'user_id': data.id, 'attendance_id': this.userAttendance.id})
+                        .then((res) => {
+                            Swal.fire('Saved', '', 'success')
+                        })
+                        .catch((err) => {
+                            console.log(err);
+                        });
+                    }
+                })
+            })
+            .catch((err) => {
+                console.log(err);
+            });
         },
 
         deleteDataConfirm(data){

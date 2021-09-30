@@ -32,6 +32,10 @@ Route::resource('/api/users', 'UsersController');
 Route::get('/home/users', 'UsersController@pageHome');
 Route::post('/api/users/fetch', 'UsersController@fetch');
 
+//Attendances
+Route::post('/api/attendances/userAttendanceToday', 'AttendancesController@userAttendanceToday');
+Route::post('/api/attendances/timeInOut', 'AttendancesController@timeInOut');
+
 //SchedulesController
 Route::resource('/api/schedules', 'SchedulesController');
 Route::get('/home/schedules', 'SchedulesController@pageHome');

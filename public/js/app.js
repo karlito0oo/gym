@@ -19471,6 +19471,7 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
 //
 //
 //
+//
 var Errors = /*#__PURE__*/function () {
   function Errors() {
     _classCallCheck(this, Errors);
@@ -19568,7 +19569,8 @@ var Errors = /*#__PURE__*/function () {
         "function": ''
       },
       errors: new Errors(),
-      sections: this.sectionsFetch()
+      sections: this.sectionsFetch(),
+      userAttendance: {}
     };
   },
   methods: {
@@ -19643,8 +19645,55 @@ var Errors = /*#__PURE__*/function () {
         _this4.showNotif('warning', '<strong>Warning!</strong><br>' + _this4.errors.get('name'));
       });
     },
-    deleteDataConfirm: function deleteDataConfirm(data) {
+    timeInOut: function timeInOut(data) {
       var _this5 = this;
+
+      axios.post('/api/attendances/userAttendanceToday', data).then(function (res) {
+        _this5.userAttendance = res.data;
+        Swal.fire({
+          title: 'What do you want to do?',
+          showDenyButton: true,
+          confirmButtonText: 'Time In',
+          denyButtonText: "Time Out",
+          //denyButtonColor: '#0000FF',
+          didOpen: function didOpen() {
+            if (_this5.userAttendance) {
+              $(".swal2-confirm").prop('disabled', true);
+              $(".swal2-deny").prop('disabled', false);
+            } else {
+              $(".swal2-confirm").prop('disabled', false);
+              $(".swal2-deny").prop('disabled', true);
+            }
+          }
+        }).then(function (result) {
+          /* Read more about isConfirmed, isDenied below */
+          if (result.isConfirmed) {
+            axios.post('/api/attendances/timeInOut', {
+              'action': 'timeIn',
+              'user_id': data.id
+            }).then(function (res) {
+              Swal.fire('Saved', '', 'success');
+            })["catch"](function (err) {
+              console.log(err);
+            });
+          } else if (result.isDenied) {
+            axios.post('/api/attendances/timeInOut', {
+              'action': 'timeOut',
+              'user_id': data.id,
+              'attendance_id': _this5.userAttendance.id
+            }).then(function (res) {
+              Swal.fire('Saved', '', 'success');
+            })["catch"](function (err) {
+              console.log(err);
+            });
+          }
+        });
+      })["catch"](function (err) {
+        console.log(err);
+      });
+    },
+    deleteDataConfirm: function deleteDataConfirm(data) {
+      var _this6 = this;
 
       this.notif.confirm = true;
       this.notif["function"] = 'dataDelete';
@@ -19659,10 +19708,10 @@ var Errors = /*#__PURE__*/function () {
         confirmButtonText: 'Yes, delete it!'
       }).then(function (result) {
         if (result.isConfirmed) {
-          axios["delete"](_this5.endPoint + _this5.editableId).then(function (res) {
-            _this5.getProjects();
+          axios["delete"](_this6.endPoint + _this6.editableId).then(function (res) {
+            _this6.getProjects();
 
-            _this5.clearFields();
+            _this6.clearFields();
           })["catch"](function (err) {
             console.log(err);
           });
@@ -19682,7 +19731,7 @@ var Errors = /*#__PURE__*/function () {
       $('#dataModal').modal('show');
     },
     getProjects: function getProjects() {
-      var _this6 = this;
+      var _this7 = this;
 
       this.tableData.draw++;
       axios.get(this.endPoint, {
@@ -19690,14 +19739,14 @@ var Errors = /*#__PURE__*/function () {
       }).then(function (response) {
         var data = response.data;
 
-        if (_this6.tableData.draw == data.draw) {
-          _this6.projects = data.data.data;
+        if (_this7.tableData.draw == data.draw) {
+          _this7.projects = data.data.data;
 
-          _this6.configPagination(data.data);
+          _this7.configPagination(data.data);
         }
 
-        if (_this6.pagination.total == 0) {
-          _this6.showNotif('warning', '<strong>Warning!</strong> No data found!.');
+        if (_this7.pagination.total == 0) {
+          _this7.showNotif('warning', '<strong>Warning!</strong> No data found!.');
         }
       })["catch"](function (errors) {
         console.log(errors);
@@ -85223,7 +85272,32 @@ var render = function() {
                                 }
                               })
                             ]
-                          )
+                          ),
+                          _vm._v(" "),
+                          project.userRole != "admin"
+                            ? _c(
+                                "button",
+                                {
+                                  staticClass: "btn btn-success btn-sm",
+                                  on: {
+                                    click: function($event) {
+                                      return _vm.timeInOut(project)
+                                    }
+                                  }
+                                },
+                                [
+                                  _c("span", {
+                                    staticClass: "icon-hourglass",
+                                    attrs: {
+                                      "data-toggle": "tooltip",
+                                      "data-placement": "left",
+                                      title: "",
+                                      "data-original-title": "Time In/Out"
+                                    }
+                                  })
+                                ]
+                              )
+                            : _vm._e()
                         ])
                       ])
                     }),
