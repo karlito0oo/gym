@@ -178,9 +178,13 @@
         <div class="main-menu-content">
             <ul id="main-menu-navigation" data-menu="menu-navigation" class="navigation navigation-main">
             
+            @if(Auth::user() && Auth::user()->role->name == 'admin')
             <li class="nav-item {{ collect(request()->segments())->last() == 'home' ? 'active' : ''}}"><a href="{{ url('/home') }}"><i class="icon-home"></i><span data-i18n="nav.form_layouts.form_layout_basic" class="menu-title">Dashboard</span></a>
+            @endif
+
+            <li class="nav-item {{ collect(request()->segments())->last() == 'equipments' ? 'active' : ''}}"><a href="{{ url('/home/equipments') }}"><i class="icon-rebel"></i><span data-i18n="nav.form_layouts.form_layout_basic" class="menu-title">Equipments</span></a>
             <li class="nav-item {{ collect(request()->segments())->last() == 'schedules' ? 'active' : ''}}"><a href="{{ url('/home/schedules') }}"><i class="icon-ios-calendar"></i><span data-i18n="nav.form_layouts.form_layout_basic" class="menu-title">Schedules</span></a>
-            @if($user->role->name == 'admin')
+            @if(Auth::user() && Auth::user()->role->name == 'admin')
             <li class="nav-item {{ collect(request()->segments())->last() == 'members' ? 'active' : ''}}"><a href="{{ url('/home/members') }}"><i class="icon-ios-people"></i><span data-i18n="nav.form_layouts.form_layout_basic" class="menu-title">Users</span></a>
             @endif
             </ul>

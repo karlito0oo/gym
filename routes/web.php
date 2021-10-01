@@ -41,6 +41,10 @@ Route::resource('/api/schedules', 'SchedulesController');
 Route::get('/home/schedules', 'SchedulesController@pageHome');
 Route::post('/api/schedules/fetch', 'SchedulesController@fetch');
 
+//EquipmentsController
+Route::resource('/api/equipments', 'EquipmentsController');
+Route::get('/home/equipments', 'EquipmentsController@pageHome');
+
 //Image upload
 Route::post('/api/uploadImage/{do}', 'ImageUploadController@index');
 
