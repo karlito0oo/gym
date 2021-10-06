@@ -37,7 +37,7 @@ class HomeController extends Controller
         }
         //get home page
         if($user->role->name == 'member'){
-            return view('admin/home', [
+            return view('home', [
                 'user' => $user,
             ]);
         }

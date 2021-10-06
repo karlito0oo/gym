@@ -13,6 +13,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Carbon\Carbon;
 
 class User extends Authenticatable implements MustVerifyEmail
 {
@@ -47,7 +48,7 @@ class User extends Authenticatable implements MustVerifyEmail
     ];
 
     
-    protected $appends = ['userRole'];
+    protected $appends = ['userRole', 'memberSince', 'firstAttend', 'lastAttend', 'totalAttend'];
 
     public function calendars(){
         return $this->belongsToMany('App\Calendar');
@@ -57,8 +58,33 @@ class User extends Authenticatable implements MustVerifyEmail
         return $this->hasOne('App\Role', 'id', 'role_id');
     }
 
+    public function attendances(){
+        return $this->hasMany('App\Attendance', 'user_id', 'id')->orderBy('id', 'desc');
+    }
+
     public function getUserRoleAttribute(){
         return $this->role->name;
+    }
+
+    public function getMemberSinceAttribute(){
+        return Carbon::parse($this->created_at)->format('M d, Y');
+    }
+
+    public function getFirstAttendAttribute(){
+        $date = $this->attendances->last();
+
+        return ($date ? Carbon::parse($date->in)->format('M d, Y g:i A') : '-');
+    }
+
+    public function getLastAttendAttribute(){
+        $date = $this->attendances->first();
+
+        return ($date ? Carbon::parse($date->out)->format('M d, Y g:i A') : '-');
+    }
+
+    public function getTotalAttendAttribute(){
+
+        return $this->attendances->count();
     }
     
 }
