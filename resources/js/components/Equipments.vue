@@ -2,7 +2,7 @@
     <div>
         <div class="row">
             <div class="col-xs-12 mt-1 mb-3">
-                <h4>Here's our equipments 
+                <h4>List of Equipments 
                  <button  v-if="user.userRole == 'admin'" type="button" class="btn btn-sm btn-primary" style="float:right" @click="dataModalOpen">
                     <i class="icon-plus"></i>ADD
                 </button></h4>

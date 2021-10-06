@@ -84865,7 +84865,7 @@ var render = function() {
     _c("div", { staticClass: "row" }, [
       _c("div", { staticClass: "col-xs-12 mt-1 mb-3" }, [
         _c("h4", [
-          _vm._v("Here's our equipments \n                 "),
+          _vm._v("List of Equipments \n                 "),
           _vm.user.userRole == "admin"
             ? _c(
                 "button",

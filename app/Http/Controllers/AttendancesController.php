@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Attendance;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
+use Auth;
 
 class AttendancesController extends Controller
 {
@@ -82,6 +83,13 @@ class AttendancesController extends Controller
     public function destroy($id)
     {
         //
+    }
+    
+    public function pageHome(){
+        $user = Auth::user();
+        return view('attendance', [
+            'user' => $user,
+        ]);
     }
 
     public function userAttendanceToday(Request $request)

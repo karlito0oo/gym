@@ -35,6 +35,7 @@ Route::post('/api/users/fetch', 'UsersController@fetch');
 //Attendances
 Route::post('/api/attendances/userAttendanceToday', 'AttendancesController@userAttendanceToday');
 Route::post('/api/attendances/timeInOut', 'AttendancesController@timeInOut');
+Route::get('/home/attendances', 'AttendancesController@pageHome');
 
 //SchedulesController
 Route::resource('/api/schedules', 'SchedulesController');
