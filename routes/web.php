@@ -31,6 +31,8 @@ Route::patch('/api/members/updateUserType/{id}', 'MembersController@updateUserTy
 Route::resource('/api/users', 'UsersController');
 Route::get('/home/users', 'UsersController@pageHome');
 Route::post('/api/users/fetch', 'UsersController@fetch');
+Route::get('/home/user/settings', 'UsersController@settings');
+Route::post('/api/users/updatePassword', 'UsersController@updatePassword');
 
 //Attendances
 Route::post('/api/attendances/userAttendanceToday', 'AttendancesController@userAttendanceToday');

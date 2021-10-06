@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\User;
 use Illuminate\Http\Request;
+use Auth;
+use Illuminate\Support\Facades\Hash;
 
 class UsersController extends Controller
 {
@@ -68,7 +70,16 @@ class UsersController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+
+        $user = User::find($id);
+        $user->name = $request->name;
+        $user->lname = $request->lname;
+        $user->birthday = $request->birthday;
+        $user->gender = $request->gender;
+        $user->email = $request->email;
+        $user->contactno = $request->contactno;
+
+        return $user->save();
     }
 
     /**
@@ -87,5 +98,42 @@ class UsersController extends Controller
         ->when($request->type == 'Instructor', function ($query) {
             return $query->where('role_id', '3');
         });
+    }
+
+    public function settings()
+    {
+        $user = Auth::user();
+
+        return view('settings', [
+            'user' => $user,
+        ]);
+    }
+
+    public function updatePassword(Request $request)
+    {   
+        $data = (object)[];
+        $data->result = false;
+        $data->message = 'Something went wrong';
+
+        $user = User::find($request->id);
+
+        $hasher = app('hash');
+        if (!$hasher->check($request->currentPassword, $user->password)) {
+            $data->message = 'Current password doesn\'t match.';
+            return response()->json($data);
+        }
+
+        if($request->newPassword != $request->confirmPassword){
+            $data->message = 'New password and confirm password doesn\'t match.';
+            return response()->json($data);
+        }
+
+        $user->password = Hash::make($request->newPassword);
+        $user->save();
+
+        $data->result = true;
+        
+        return response()->json($data);
+
     }
 }
