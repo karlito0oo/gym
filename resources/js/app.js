@@ -19,21 +19,8 @@ window.Vue = require('vue');
 // const files = require.context('./', true, /\.vue$/i)
 // files.keys().map(key => Vue.component(key.split('/').pop().split('.')[0], files(key).default))
 
-Vue.component('dictionary-component', require('./components/DictionaryComponent.vue').default);
-
-Vue.component('difficulties-component', require('./components/DifficultiesDatatableComponent.vue').default);
-
-Vue.component('genres-component', require('./components/GenresDatatableComponent.vue').default);
-
-Vue.component('reading-component', require('./components/ReadingDatatableComponent.vue').default);
-
-Vue.component('sections-component', require('./components/SectionsDatatableComponent.vue').default);
-
 Vue.component('members-component', require('./components/MembersDatatableComponent.vue').default);
 
-Vue.component('questions-component', require('./components/QuestionsDatatableComponent.vue').default);
-
-Vue.component('activities-component', require('./components/ActivitiesDatatableComponent.vue').default);
 
 Vue.component('my-profile', require('./components/MyProfileComponent.vue').default);
 
