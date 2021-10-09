@@ -16,7 +16,7 @@ class AddLnameGenderUsersTable extends Migration
         Schema::table('users', function($table) {
             $table->integer('role_id');
             $table->string('lname');
-            $table->string('gender');
+            $table->string('gender')->nullable();
         });
     }
 

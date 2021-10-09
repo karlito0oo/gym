@@ -58,11 +58,11 @@
                     <form class="form-horizontal form-simple" method="POST" action="{{ route('login') }}">
                     @csrf
                         <fieldset class="form-group position-relative has-icon-left mb-0">
-                            <input id="email" type="email" class="form-control form-control-lg input-lg @error('email') is-invalid @enderror" name="email" value="{{ old('email') }}" autocomplete="email" autofocus placeholder="Your Email" required>
+                            <input id="user_name" type="text" class="form-control form-control-lg input-lg @error('user_name') is-invalid @enderror" name="user_name" value="{{ old('user_name') }}" autofocus placeholder="Your User Name" required>
                             <div class="form-control-position">
                                 <i class="icon-head"></i>
                             </div>
-                            @error('email')
+                            @error('user_name')
                                 <span class="invalid-feedback" role="alert">
                                     <strong style="color:red;">{{ $message }}</strong>
                                 </span>

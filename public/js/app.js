@@ -78343,7 +78343,7 @@ var render = function() {
                           _c("div", { staticClass: "col-md-6" }, [
                             _c("div", { staticClass: "form-group" }, [
                               _c("label", { attrs: { for: "projectinput3" } }, [
-                                _vm._v("E-mail *")
+                                _vm._v("Username *")
                               ]),
                               _vm._v(" "),
                               _c("input", {
@@ -78351,8 +78351,8 @@ var render = function() {
                                   {
                                     name: "model",
                                     rawName: "v-model",
-                                    value: _vm.user.email,
-                                    expression: "user.email"
+                                    value: _vm.user.user_name,
+                                    expression: "user.user_name"
                                   }
                                 ],
                                 staticClass: "form-control",
@@ -78360,11 +78360,10 @@ var render = function() {
                                   disabled: "",
                                   type: "text",
                                   id: "projectinput3",
-                                  placeholder: "E-mail",
-                                  name: "email",
+                                  placeholder: "Username",
                                   required: ""
                                 },
-                                domProps: { value: _vm.user.email },
+                                domProps: { value: _vm.user.user_name },
                                 on: {
                                   input: function($event) {
                                     if ($event.target.composing) {
@@ -78372,7 +78371,7 @@ var render = function() {
                                     }
                                     _vm.$set(
                                       _vm.user,
-                                      "email",
+                                      "user_name",
                                       $event.target.value
                                     )
                                   }

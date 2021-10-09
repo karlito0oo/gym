@@ -55,8 +55,8 @@
                                     <div class="row">
                                         <div class="col-md-6">
                                             <div class="form-group">
-                                                <label for="projectinput3">E-mail *</label>
-                                                <input disabled type="text" id="projectinput3" class="form-control" placeholder="E-mail" name="email" v-model="user.email" required>
+                                                <label for="projectinput3">Username *</label>
+                                                <input disabled type="text" id="projectinput3" class="form-control" placeholder="Username" v-model="user.user_name" required>
                                             </div>
                                         </div>
                                         <div class="col-md-6">

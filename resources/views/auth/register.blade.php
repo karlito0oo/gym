@@ -79,7 +79,7 @@
                                 </span>
                             @enderror
 						</fieldset>
-						<fieldset class="form-group position-relative has-icon-left mb-1">
+						<!-- <fieldset class="form-group position-relative has-icon-left mb-1">
 							<select id="gender" name="gender" type="text" class="form-control form-control-lg input-lg @error('gender') is-invalid @enderror" required autocomplete="gender" style="text-indent: 28px;">
                                 <option value="">Select Gender</option>
                                 <option>Female</option>
@@ -93,13 +93,24 @@
                                     <strong style="color:red;">{{ $message }}</strong>
                                 </span>
                             @enderror
-						</fieldset>
-						<fieldset class="form-group position-relative has-icon-left mb-1">
+						</fieldset> -->
+						<!-- <fieldset class="form-group position-relative has-icon-left mb-1">
 							<input id="email" name="email" type="email" class="form-control form-control-lg input-lg @error('email') is-invalid @enderror" value="{{ old('email') }}" required autocomplete="email" placeholder="Email">
 							<div class="form-control-position">
 							    <i class="icon-email"></i>
 							</div>
                             @error('email')
+                                <span class="invalid-feedback" role="alert">
+                                    <strong style="color:red;">{{ $message }}</strong>
+                                </span>
+                            @enderror
+						</fieldset> -->
+						<fieldset class="form-group position-relative has-icon-left mb-1">
+							<input id="user_name" name="user_name" type="text" class="form-control form-control-lg input-lg @error('user_name') is-invalid @enderror" value="{{ old('user_name') }}" required placeholder="User Name">
+							<div class="form-control-position">
+							    <i class="icon-email"></i>
+							</div>
+                            @error('user_name')
                                 <span class="invalid-feedback" role="alert">
                                     <strong style="color:red;">{{ $message }}</strong>
                                 </span>
