@@ -330,11 +330,24 @@ var moment = require('moment');
                 this.event.id = args.event.id;
                 this.editableId = args.event.id;
 
+                console.log(args.event);
+
+                var eventStart = this.moment(args.event.start).format('YYYY-MM-DD');
+
+                var isPast = moment(moment().format('YYYY-MM-DD')).isSameOrAfter(eventStart);
+
                 if(this.user.userRole == 'admin'){
                     this.todo = 'Edit';
                     this.fetchSelectedEvent();
 
                     $('#dataModal').modal('show');
+                }
+                else if(isPast){
+                    Swal.fire(
+                        'Oppppps!',
+                        'You cannot book this slot anymore.',
+                        'warning'
+                    )
                 }
                 else if(this.user.userRole == 'member'){
                     console.log(args.event);

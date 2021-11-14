@@ -33,6 +33,12 @@
                             @php
                                 $count = 1;
                             @endphp
+
+                            @if(count($user->attendances) == 0)
+                            <tr>
+                                <td colspan="3" class="text-xs-center">No data found.</td>
+                            </tr>
+                            @endif
                             
                             @foreach($user->attendances as $attendance)
 

@@ -48,6 +48,10 @@ Route::post('/api/schedules/fetch', 'SchedulesController@fetch');
 Route::resource('/api/equipments', 'EquipmentsController');
 Route::get('/home/equipments', 'EquipmentsController@pageHome');
 
+//FoodSupplement
+Route::resource('/api/food-supplements', 'FoodSupplementsController');
+Route::get('/home/food-supplements', 'FoodSupplementsController@pageHome');
+
 //Image upload
 Route::post('/api/uploadImage/{do}', 'ImageUploadController@index');
 
