@@ -17176,6 +17176,141 @@ module.exports = {
 
 /***/ }),
 
+/***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/BMIComponent.vue?vue&type=script&lang=js&":
+/*!***********************************************************************************************************************************************************************!*\
+  !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/BMIComponent.vue?vue&type=script&lang=js& ***!
+  \***********************************************************************************************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+/* harmony default export */ __webpack_exports__["default"] = ({
+  data: function data() {
+    return {
+      feets: '',
+      inches: '',
+      kilos: '',
+      result: '',
+      bmi: '',
+      category: ''
+    };
+  },
+  methods: {
+    calculate: function calculate() {
+      var cm = this.feets * 30.48;
+      cm = cm + this.inches * 2.54;
+      this.bmi = this.kilos / Math.pow(cm, 2) * 10000;
+      this.bmi = this.bmi.toFixed(2);
+
+      if (parseFloat(this.bmi) < 18.5) {
+        this.category = 'under';
+        this.result = 'Your BMI is ' + this.bmi + ', indicating your weight is in the Underweight category for adults of your height.<br><br>Talk with your healthcare provider to determine possible causes of underweight and if you need to gain weight.';
+      } else if (parseFloat(this.bmi) > 18.5 && parseFloat(this.bmi) <= 24.99) {
+        this.category = 'healthy';
+        this.result = 'Your BMI is ' + this.bmi + ', indicating your weight is in the Healthy category for adults of your height.<br><br>Maintaining a healthy weight may reduce the risk of chronic diseases associated with overweight and obesity.';
+      } else if (parseFloat(this.bmi) > 25.0 && parseFloat(this.bmi) <= 29.99) {
+        this.category = 'over';
+        this.result = 'Your BMI ' + this.bmi + ', indicating your weight is in the Overweight category for adults of your height. <br><br>People who are overweight or obese are at higher risk for chronic conditions such as high blood pressure, diabetes, and high cholesterol. <br><br>Anyone who is overweight should try to avoid gaining additional weight. Additionally, if you are overweight with other risk factors (such as high LDL cholesterol, low HDL cholesterol, or high blood pressure), you should try to lose weight. Even modest weight loss may help lower the risk of disease.';
+      } else {
+        this.category = 'obese';
+        this.result = 'Your BMI is ' + this.bmi + ', indicating your weight is in the Obese category for adults of your height. <br><br>People who are overweight or obese are at higher risk for chronic conditions such as high blood pressure, diabetes, and high cholesterol. <br><br>Anyone who is overweight should try to avoid gaining additional weight. Additionally, if you are overweight with other risk factors (such as high LDL cholesterol, low HDL cholesterol, or high blood pressure), you should try to lose weight. Even modest weight loss may help lower the risk of disease.';
+      }
+    }
+  },
+  mounted: function mounted() {
+    console.log('Component mounted.');
+  }
+});
+
+/***/ }),
+
 /***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/CalendarComponent.vue?vue&type=script&lang=js&":
 /*!****************************************************************************************************************************************************************************!*\
   !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/CalendarComponent.vue?vue&type=script&lang=js& ***!
@@ -76657,6 +76792,328 @@ exports.clearImmediate = (typeof self !== "undefined" && self.clearImmediate) ||
 
 /***/ }),
 
+/***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/BMIComponent.vue?vue&type=template&id=6d9544ec&":
+/*!***************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/BMIComponent.vue?vue&type=template&id=6d9544ec& ***!
+  \***************************************************************************************************************************************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c("div", [
+    _vm._m(0),
+    _vm._v(" "),
+    _c(
+      "div",
+      {
+        staticClass: "modal fade text-xs-left",
+        attrs: {
+          id: "dictionaryModal",
+          tabindex: "-1",
+          role: "dialog",
+          "aria-labelledby": "myModalLabel2",
+          "aria-hidden": "true"
+        }
+      },
+      [
+        _c(
+          "div",
+          { staticClass: "modal-dialog", attrs: { role: "document" } },
+          [
+            _c("div", { staticClass: "modal-content" }, [
+              _vm._m(1),
+              _vm._v(" "),
+              _c("div", { staticClass: "modal-body" }, [
+                _vm._m(2),
+                _vm._v(" "),
+                _c("div", { staticClass: "row" }, [
+                  _c("div", { staticClass: "col-md-6" }, [
+                    _c("input", {
+                      directives: [
+                        {
+                          name: "model",
+                          rawName: "v-model",
+                          value: _vm.feets,
+                          expression: "feets"
+                        }
+                      ],
+                      staticClass: "form-control border-primary col-md-6",
+                      attrs: { type: "text", placeholder: "Feet" },
+                      domProps: { value: _vm.feets },
+                      on: {
+                        input: function($event) {
+                          if ($event.target.composing) {
+                            return
+                          }
+                          _vm.feets = $event.target.value
+                        }
+                      }
+                    })
+                  ]),
+                  _vm._v(" "),
+                  _c("div", { staticClass: "col-md-6" }, [
+                    _c("input", {
+                      directives: [
+                        {
+                          name: "model",
+                          rawName: "v-model",
+                          value: _vm.inches,
+                          expression: "inches"
+                        }
+                      ],
+                      staticClass: "form-control border-primary col-md-6",
+                      attrs: { type: "text", placeholder: "Inch" },
+                      domProps: { value: _vm.inches },
+                      on: {
+                        input: function($event) {
+                          if ($event.target.composing) {
+                            return
+                          }
+                          _vm.inches = $event.target.value
+                        }
+                      }
+                    })
+                  ])
+                ]),
+                _vm._v(" "),
+                _c("br"),
+                _vm._v(" "),
+                _vm._m(3),
+                _vm._v(" "),
+                _c("div", { staticClass: "row" }, [
+                  _c("div", { staticClass: "col-md-12" }, [
+                    _c("input", {
+                      directives: [
+                        {
+                          name: "model",
+                          rawName: "v-model",
+                          value: _vm.kilos,
+                          expression: "kilos"
+                        }
+                      ],
+                      staticClass: "form-control border-primary col-md-6",
+                      attrs: { type: "text", placeholder: "Kilo" },
+                      domProps: { value: _vm.kilos },
+                      on: {
+                        input: function($event) {
+                          if ($event.target.composing) {
+                            return
+                          }
+                          _vm.kilos = $event.target.value
+                        }
+                      }
+                    })
+                  ])
+                ]),
+                _vm._v(" "),
+                _c("hr"),
+                _vm._v(" "),
+                _vm.result != ""
+                  ? _c("div", [
+                      _vm._m(4),
+                      _vm._v(" "),
+                      _c("div", { staticClass: "row" }, [
+                        _c("div", { staticClass: "col-md-6" }, [
+                          _c("span", {
+                            domProps: { innerHTML: _vm._s(_vm.result) }
+                          })
+                        ]),
+                        _vm._v(" "),
+                        _c("div", { staticClass: "col-md-6" }, [
+                          _c(
+                            "table",
+                            { staticClass: "table table-bordered mb-0" },
+                            [
+                              _vm._m(5),
+                              _vm._v(" "),
+                              _c("tbody", [
+                                _c(
+                                  "tr",
+                                  {
+                                    style:
+                                      _vm.category == "under"
+                                        ? "background-color: green"
+                                        : ""
+                                  },
+                                  [
+                                    _c("td", [_vm._v("Below 18.5")]),
+                                    _vm._v(" "),
+                                    _c("td", [_vm._v("Underweight")])
+                                  ]
+                                ),
+                                _vm._v(" "),
+                                _c(
+                                  "tr",
+                                  {
+                                    style:
+                                      _vm.category == "healthy"
+                                        ? "background-color: green"
+                                        : ""
+                                  },
+                                  [
+                                    _c("td", [_vm._v("18.5—24.9")]),
+                                    _vm._v(" "),
+                                    _c("td", [_vm._v("Healthy")])
+                                  ]
+                                ),
+                                _vm._v(" "),
+                                _c(
+                                  "tr",
+                                  {
+                                    style:
+                                      _vm.category == "over"
+                                        ? "background-color: green"
+                                        : ""
+                                  },
+                                  [
+                                    _c("td", [_vm._v("25.0—29.9")]),
+                                    _vm._v(" "),
+                                    _c("td", [_vm._v("Overweight")])
+                                  ]
+                                ),
+                                _vm._v(" "),
+                                _c(
+                                  "tr",
+                                  {
+                                    style:
+                                      _vm.category == "obese"
+                                        ? "background-color: green"
+                                        : ""
+                                  },
+                                  [
+                                    _c("td", [_vm._v("30.0 and Above")]),
+                                    _vm._v(" "),
+                                    _c("td", [_vm._v("Obese")])
+                                  ]
+                                )
+                              ])
+                            ]
+                          )
+                        ])
+                      ])
+                    ])
+                  : _vm._e()
+              ]),
+              _vm._v(" "),
+              _c("div", { staticClass: "modal-footer" }, [
+                _c(
+                  "button",
+                  {
+                    staticClass: "btn btn-primary",
+                    attrs: { type: "button" },
+                    on: { click: _vm.calculate }
+                  },
+                  [
+                    _c("i", { staticClass: "icon-calculator" }),
+                    _vm._v(" Calculate\n                ")
+                  ]
+                ),
+                _vm._v(" "),
+                _c(
+                  "button",
+                  {
+                    staticClass: "btn grey btn-outline-secondary",
+                    attrs: { type: "button", "data-dismiss": "modal" }
+                  },
+                  [_vm._v("Close")]
+                )
+              ])
+            ])
+          ]
+        )
+      ]
+    )
+  ])
+}
+var staticRenderFns = [
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c(
+      "a",
+      {
+        staticClass: "floatingBtn",
+        attrs: {
+          href: "#",
+          "data-toggle": "modal",
+          "data-target": "#dictionaryModal"
+        }
+      },
+      [
+        _c("br"),
+        _vm._v(" "),
+        _c("i", { staticClass: "MyFloatingBtn" }, [_vm._v(" B M I")])
+      ]
+    )
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "modal-header" }, [
+      _c(
+        "button",
+        {
+          staticClass: "close",
+          attrs: {
+            type: "button",
+            "data-dismiss": "modal",
+            "aria-label": "Close"
+          }
+        },
+        [_c("span", { attrs: { "aria-hidden": "true" } }, [_vm._v("×")])]
+      ),
+      _vm._v(" "),
+      _c("h4", { staticClass: "modal-title", attrs: { id: "myModalLabel2" } }, [
+        _vm._v("Adult BMI Calculator")
+      ])
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("label", [_c("h4", [_vm._v("Height")])])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("label", [_c("h4", [_vm._v("Weight")])])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("label", [_c("h4", [_vm._v("Result")])])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("thead", [
+      _c("tr", [
+        _c("th", [_vm._v("BMI")]),
+        _vm._v(" "),
+        _c("th", [_vm._v("Status")])
+      ])
+    ])
+  }
+]
+render._withStripped = true
+
+
+
+/***/ }),
+
 /***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/CalendarComponent.vue?vue&type=template&id=56bbe5f8&":
 /*!********************************************************************************************************************************************************************************************************************!*\
   !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/CalendarComponent.vue?vue&type=template&id=56bbe5f8& ***!
@@ -96294,6 +96751,7 @@ Vue.component('calendar', __webpack_require__(/*! ./components/CalendarComponent
 Vue.component('example-component', __webpack_require__(/*! ./components/ExampleComponent.vue */ "./resources/js/components/ExampleComponent.vue")["default"]);
 Vue.component('equipments', __webpack_require__(/*! ./components/Equipments.vue */ "./resources/js/components/Equipments.vue")["default"]);
 Vue.component('food-supplements', __webpack_require__(/*! ./components/FoodSupplements.vue */ "./resources/js/components/FoodSupplements.vue")["default"]);
+Vue.component('bmi-component', __webpack_require__(/*! ./components/BMIComponent.vue */ "./resources/js/components/BMIComponent.vue")["default"]);
 /**
  * Next, we will create a fresh Vue application instance and attach it to
  * the page. Then, you may begin adding components to this application
@@ -96349,6 +96807,75 @@ window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 //     cluster: process.env.MIX_PUSHER_APP_CLUSTER,
 //     forceTLS: true
 // });
+
+/***/ }),
+
+/***/ "./resources/js/components/BMIComponent.vue":
+/*!**************************************************!*\
+  !*** ./resources/js/components/BMIComponent.vue ***!
+  \**************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _BMIComponent_vue_vue_type_template_id_6d9544ec___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./BMIComponent.vue?vue&type=template&id=6d9544ec& */ "./resources/js/components/BMIComponent.vue?vue&type=template&id=6d9544ec&");
+/* harmony import */ var _BMIComponent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./BMIComponent.vue?vue&type=script&lang=js& */ "./resources/js/components/BMIComponent.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport *//* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+
+
+
+
+
+/* normalize component */
+
+var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__["default"])(
+  _BMIComponent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__["default"],
+  _BMIComponent_vue_vue_type_template_id_6d9544ec___WEBPACK_IMPORTED_MODULE_0__["render"],
+  _BMIComponent_vue_vue_type_template_id_6d9544ec___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"],
+  false,
+  null,
+  null,
+  null
+  
+)
+
+/* hot reload */
+if (false) { var api; }
+component.options.__file = "resources/js/components/BMIComponent.vue"
+/* harmony default export */ __webpack_exports__["default"] = (component.exports);
+
+/***/ }),
+
+/***/ "./resources/js/components/BMIComponent.vue?vue&type=script&lang=js&":
+/*!***************************************************************************!*\
+  !*** ./resources/js/components/BMIComponent.vue?vue&type=script&lang=js& ***!
+  \***************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_BMIComponent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/babel-loader/lib??ref--4-0!../../../node_modules/vue-loader/lib??vue-loader-options!./BMIComponent.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/BMIComponent.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport */ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_BMIComponent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]); 
+
+/***/ }),
+
+/***/ "./resources/js/components/BMIComponent.vue?vue&type=template&id=6d9544ec&":
+/*!*********************************************************************************!*\
+  !*** ./resources/js/components/BMIComponent.vue?vue&type=template&id=6d9544ec& ***!
+  \*********************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_BMIComponent_vue_vue_type_template_id_6d9544ec___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../node_modules/vue-loader/lib??vue-loader-options!./BMIComponent.vue?vue&type=template&id=6d9544ec& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/BMIComponent.vue?vue&type=template&id=6d9544ec&");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_BMIComponent_vue_vue_type_template_id_6d9544ec___WEBPACK_IMPORTED_MODULE_0__["render"]; });
+
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_BMIComponent_vue_vue_type_template_id_6d9544ec___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
+
+
 
 /***/ }),
 

@@ -37,7 +37,24 @@
     <link rel="stylesheet" type="text/css" href="{{ asset('template/robust/assets/css/style.css') }}">
     <link rel="stylesheet" type="text/css" href="{{ asset('css/custom.css') }}">
     <!-- END Custom CSS-->
-    
+    <style>
+        .floatingBtn{
+            position:fixed;
+            width:60px;
+            height:60px;
+            bottom:40px;
+            right:40px;
+            background-color:#0C9;
+            color:#FFF;
+            border-radius:50px;
+            text-align:center;
+            box-shadow: 2px 2px 3px #999;
+        }
+
+        .MyFloatingBtn{
+            margin-top:22px;
+        }
+    </style>
   </head>
   <body data-open="click" data-menu="vertical-menu" data-col="2-columns" class="vertical-layout vertical-menu 2-columns  fixed-navbar">
     <div id="app">
@@ -211,7 +228,7 @@
         </div>
         <!-- ////////////////////////////////////////////////////////////////////////////-->
 
-        <!-- <dictionary-component></dictionary-component> -->
+        <bmi-component></bmi-component>
 
         <footer class="footer footer-static footer-light navbar-border customFooter">
         (C) 2021 SOUTH FITNESS GYM
