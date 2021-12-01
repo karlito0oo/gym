@@ -3,11 +3,10 @@
 namespace App\Http\Controllers;
 
 use Auth;
-use App\Activity;
+use Carbon\Carbon;
+use App\Attendance;
+use App\Calendar;
 use App\User;
-use App\Section;
-use App\Question;
-use App\Reading;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 
@@ -42,8 +41,22 @@ class HomeController extends Controller
             ]);
         }
         elseif($user->role->name == 'admin'){
+            $attendedToday = Attendance::select('user_id')
+                ->whereDate('created_at', Carbon::today())
+                ->distinct()
+                ->get()
+                ->count();
+            
+            $slots = Calendar::where('start', Carbon::today())->get();
+            $reservedToday = 0;
+            foreach($slots as $slot){
+                $reservedToday = $slot->users->count();
+            }
+                
             return view('admin/home', [
                 'user' => $user,
+                'attendedToday' => $attendedToday,
+                'reservedToday' => $reservedToday,
             ]);
         }
     }

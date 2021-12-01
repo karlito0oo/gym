@@ -34,6 +34,8 @@ Vue.component('food-supplements', require('./components/FoodSupplements.vue').de
 
 Vue.component('bmi-component', require('./components/BMIComponent.vue').default);
 
+Vue.component('date-time', require('./components/dateTime.vue').default);
+
 /**
  * Next, we will create a fresh Vue application instance and attach it to
  * the page. Then, you may begin adding components to this application

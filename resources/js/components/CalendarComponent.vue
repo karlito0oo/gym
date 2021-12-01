@@ -334,7 +334,7 @@ var moment = require('moment');
 
                 var eventStart = this.moment(args.event.start).format('YYYY-MM-DD');
 
-                var isPast = moment(moment().format('YYYY-MM-DD')).isSameOrAfter(eventStart);
+                var isPast = moment(moment().format('YYYY-MM-DD')).isAfter(eventStart);
 
                 if(this.user.userRole == 'admin'){
                     this.todo = 'Edit';
