@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use Auth;
+use App\User;
+Use Carbon\Carbon;
 use Illuminate\Http\Request;
 
 class SchedulesController extends Controller
@@ -88,5 +90,22 @@ class SchedulesController extends Controller
         return view('admin/schedules', [
             'user' => $user,
         ]);
+    }
+
+    public function reservationsDT(Request $request){
+        $columns = ['name', 'start', 'status'];
+
+        $length = $request->input('length');
+
+        $query = User::select('calendars.start', 'calendars.end', 'calendars.timeStart', 'calendars.timeEnd', 'users.name', 'users.lname', 'calendar_user.status', 'calendars.id as calendarID', 'users.id as userID')
+            ->join('calendar_user', 'users.id', 'calendar_user.user_id')
+            ->join('calendars', 'calendars.id', 'calendar_user.calendar_id')
+            ->where('calendars.start', '>=', Carbon::today())
+            ->where('calendar_user.status', 'pending')
+            ->orderBy('calendars.start');
+
+
+        $projects = $query->paginate($length);
+        return ['data' => $projects, 'draw' => $request->input('draw')];
     }
 }

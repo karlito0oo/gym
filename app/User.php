@@ -63,7 +63,7 @@ class User extends Authenticatable
     }
 
     public function getUserRoleAttribute(){
-        return $this->role->name;
+        return (!empty($this->role) ? $this->role->name : '');
     }
 
     public function getMemberSinceAttribute(){

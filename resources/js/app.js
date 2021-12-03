@@ -21,6 +21,8 @@ window.Vue = require('vue');
 
 Vue.component('members-component', require('./components/MembersDatatableComponent.vue').default);
 
+Vue.component('reservations-component', require('./components/ReservationsDatatableComponent.vue').default);
+
 
 Vue.component('my-profile', require('./components/MyProfileComponent.vue').default);
 

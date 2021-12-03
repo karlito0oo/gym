@@ -52,11 +52,19 @@ class HomeController extends Controller
             foreach($slots as $slot){
                 $reservedToday = $slot->users->count();
             }
+
+            $newMembers = User::where('role_id', '2')
+                ->whereDate('created_at', (new Carbon())->subMinutes(30)->toDateString())
+                ->count();
+
                 
             return view('admin/home', [
                 'user' => $user,
-                'attendedToday' => $attendedToday,
-                'reservedToday' => $reservedToday,
+                'data' => [
+                    'attendedToday' => $attendedToday,
+                    'reservedToday' => $reservedToday,
+                    'newMembers' => $newMembers,
+                ]
             ]);
         }
     }

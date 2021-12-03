@@ -43,6 +43,7 @@ Route::get('/home/attendances', 'AttendancesController@pageHome');
 Route::resource('/api/schedules', 'SchedulesController');
 Route::get('/home/schedules', 'SchedulesController@pageHome');
 Route::post('/api/schedules/fetch', 'SchedulesController@fetch');
+Route::get('/api/dt/reservations', 'SchedulesController@reservationsDT');
 
 //EquipmentsController
 Route::resource('/api/equipments', 'EquipmentsController');
