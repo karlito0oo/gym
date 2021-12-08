@@ -258,7 +258,8 @@
         <!-- END ROBUST JS-->
         <!-- BEGIN PAGE LEVEL JS-->
         <script src="{{ asset('template/robust/app-assets/js/scripts/pages/dashboard-lite.js') }}" type="text/javascript"></script>
-        <script src="{{ asset('js/wordnik.js') }}" type="text/javascript"></script>
         <!-- END PAGE LEVEL JS-->
+
+        <script src="{{ asset('template/robust/app-assets/js/scripts/charts/chartjs/line/line.js') }}" type="text/javascript"></script>
   </body>
 </html>

@@ -36,6 +36,8 @@ Vue.component('food-supplements', require('./components/FoodSupplements.vue').de
 
 Vue.component('bmi-component', require('./components/BMIComponent.vue').default);
 
+Vue.component('bmi-chart', require('./components/BMIChartComponent.vue').default);
+
 Vue.component('date-time', require('./components/dateTime.vue').default);
 
 /**

@@ -64,3 +64,7 @@ Route::resource('/api/calendars', 'CalendarsController');
 Route::post('/api/calendars/reserve', 'CalendarsController@reserve');
 Route::post('/api/calendars/approve', 'CalendarsController@approve');
 Route::get('/api/calendars/cancel/{id}', 'CalendarsController@cancel');
+
+//BMI
+Route::get('/api/bmi/chart', 'BMIController@chart');
+Route::resource('/api/bmi', 'BMIController');

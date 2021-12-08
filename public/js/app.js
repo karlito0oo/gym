@@ -17176,6 +17176,144 @@ module.exports = {
 
 /***/ }),
 
+/***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/BMIChartComponent.vue?vue&type=script&lang=js&":
+/*!****************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/BMIChartComponent.vue?vue&type=script&lang=js& ***!
+  \****************************************************************************************************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+/* harmony default export */ __webpack_exports__["default"] = ({
+  data: function data() {
+    return {
+      data: {
+        feets: '',
+        inches: '',
+        kilos: '',
+        result: '',
+        bmi: '',
+        category: ''
+      },
+      isRecord: false
+    };
+  },
+  methods: {
+    calculate: function calculate() {
+      var cm = this.data.feets * 30.48;
+      cm = cm + this.data.inches * 2.54;
+      this.data.bmi = this.data.kilos / Math.pow(cm, 2) * 10000;
+      this.data.bmi = this.data.bmi.toFixed(2);
+
+      if (parseFloat(this.data.bmi) < 18.5) {
+        this.category = 'under';
+        this.data.result = 'Your BMI is ' + this.data.bmi + ', indicating your weight is in the Underweight category for adults of your height.<br><br>Talk with your healthcare provider to determine possible causes of underweight and if you need to gain weight.';
+      } else if (parseFloat(this.data.bmi) > 18.5 && parseFloat(this.data.bmi) <= 24.99) {
+        this.data.category = 'healthy';
+        this.data.result = 'Your BMI is ' + this.data.bmi + ', indicating your weight is in the Healthy category for adults of your height.<br><br>Maintaining a healthy weight may reduce the risk of chronic diseases associated with overweight and obesity.';
+      } else if (parseFloat(this.data.bmi) > 25.0 && parseFloat(this.data.bmi) <= 29.99) {
+        this.data.category = 'over';
+        this.data.result = 'Your BMI ' + this.data.bmi + ', indicating your weight is in the Overweight category for adults of your height. <br><br>People who are overweight or obese are at higher risk for chronic conditions such as high blood pressure, diabetes, and high cholesterol. <br><br>Anyone who is overweight should try to avoid gaining additional weight. Additionally, if you are overweight with other risk factors (such as high LDL cholesterol, low HDL cholesterol, or high blood pressure), you should try to lose weight. Even modest weight loss may help lower the risk of disease.';
+      } else {
+        this.data.category = 'obese';
+        this.data.result = 'Your BMI is ' + this.data.bmi + ', indicating your weight is in the Obese category for adults of your height. <br><br>People who are overweight or obese are at higher risk for chronic conditions such as high blood pressure, diabetes, and high cholesterol. <br><br>Anyone who is overweight should try to avoid gaining additional weight. Additionally, if you are overweight with other risk factors (such as high LDL cholesterol, low HDL cholesterol, or high blood pressure), you should try to lose weight. Even modest weight loss may help lower the risk of disease.';
+      }
+
+      if (this.isRecord) {
+        axios.post('/api/bmi/', this.data).then(function (res) {
+          console.log('Result saved');
+        })["catch"](function (err) {
+          console.log(err.response.data);
+        });
+      }
+    }
+  },
+  mounted: function mounted() {
+    //Get the context of the Chart canvas element we want to select
+    var ctx = $("#line-chart"); // Chart Options
+
+    var chartOptions = {
+      responsive: true,
+      maintainAspectRatio: false,
+      legend: {
+        position: 'bottom'
+      },
+      hover: {
+        mode: 'label'
+      },
+      scales: {
+        xAxes: [{
+          display: true,
+          gridLines: {
+            color: "#f3f3f3",
+            drawTicks: false
+          },
+          scaleLabel: {
+            display: true,
+            labelString: 'Month'
+          }
+        }],
+        yAxes: [{
+          display: true,
+          gridLines: {
+            color: "#f3f3f3",
+            drawTicks: false
+          },
+          scaleLabel: {
+            display: true,
+            labelString: 'Value'
+          }
+        }]
+      },
+      title: {
+        display: true,
+        text: 'BMI Chart'
+      }
+    }; // Chart Data
+
+    var chartData = {
+      labels: ["January", "February", "March", "April", "May", "June", "July"],
+      datasets: [{
+        label: "My Third dataset - No bezier",
+        data: [45, 25, 16, 36, 67, 18, 76],
+        lineTension: 0,
+        fill: false,
+        borderColor: "#FF5722",
+        pointBorderColor: "#FF5722",
+        pointBackgroundColor: "#FFF",
+        pointBorderWidth: 2,
+        pointHoverBorderWidth: 2,
+        pointRadius: 4
+      }]
+    };
+    var config = {
+      type: 'line',
+      // Chart Options
+      options: chartOptions,
+      data: chartData
+    }; // Create the chart
+
+    var lineChart = new Chart(ctx, config);
+  }
+});
+
+/***/ }),
+
 /***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/BMIComponent.vue?vue&type=script&lang=js&":
 /*!***********************************************************************************************************************************************************************!*\
   !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/BMIComponent.vue?vue&type=script&lang=js& ***!
@@ -17271,36 +17409,63 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
-      feets: '',
-      inches: '',
-      kilos: '',
-      result: '',
-      bmi: '',
-      category: ''
+      data: {
+        feets: '',
+        inches: '',
+        kilos: '',
+        result: '',
+        bmi: '',
+        category: ''
+      },
+      isRecord: false
     };
   },
   methods: {
     calculate: function calculate() {
-      var cm = this.feets * 30.48;
-      cm = cm + this.inches * 2.54;
-      this.bmi = this.kilos / Math.pow(cm, 2) * 10000;
-      this.bmi = this.bmi.toFixed(2);
+      var cm = this.data.feets * 30.48;
+      cm = cm + this.data.inches * 2.54;
+      this.data.bmi = this.data.kilos / Math.pow(cm, 2) * 10000;
+      this.data.bmi = this.data.bmi.toFixed(2);
 
-      if (parseFloat(this.bmi) < 18.5) {
+      if (parseFloat(this.data.bmi) < 18.5) {
         this.category = 'under';
-        this.result = 'Your BMI is ' + this.bmi + ', indicating your weight is in the Underweight category for adults of your height.<br><br>Talk with your healthcare provider to determine possible causes of underweight and if you need to gain weight.';
-      } else if (parseFloat(this.bmi) > 18.5 && parseFloat(this.bmi) <= 24.99) {
-        this.category = 'healthy';
-        this.result = 'Your BMI is ' + this.bmi + ', indicating your weight is in the Healthy category for adults of your height.<br><br>Maintaining a healthy weight may reduce the risk of chronic diseases associated with overweight and obesity.';
-      } else if (parseFloat(this.bmi) > 25.0 && parseFloat(this.bmi) <= 29.99) {
-        this.category = 'over';
-        this.result = 'Your BMI ' + this.bmi + ', indicating your weight is in the Overweight category for adults of your height. <br><br>People who are overweight or obese are at higher risk for chronic conditions such as high blood pressure, diabetes, and high cholesterol. <br><br>Anyone who is overweight should try to avoid gaining additional weight. Additionally, if you are overweight with other risk factors (such as high LDL cholesterol, low HDL cholesterol, or high blood pressure), you should try to lose weight. Even modest weight loss may help lower the risk of disease.';
+        this.data.result = 'Your BMI is ' + this.data.bmi + ', indicating your weight is in the Underweight category for adults of your height.<br><br>Talk with your healthcare provider to determine possible causes of underweight and if you need to gain weight.';
+      } else if (parseFloat(this.data.bmi) > 18.5 && parseFloat(this.data.bmi) <= 24.99) {
+        this.data.category = 'healthy';
+        this.data.result = 'Your BMI is ' + this.data.bmi + ', indicating your weight is in the Healthy category for adults of your height.<br><br>Maintaining a healthy weight may reduce the risk of chronic diseases associated with overweight and obesity.';
+      } else if (parseFloat(this.data.bmi) > 25.0 && parseFloat(this.data.bmi) <= 29.99) {
+        this.data.category = 'over';
+        this.data.result = 'Your BMI ' + this.data.bmi + ', indicating your weight is in the Overweight category for adults of your height. <br><br>People who are overweight or obese are at higher risk for chronic conditions such as high blood pressure, diabetes, and high cholesterol. <br><br>Anyone who is overweight should try to avoid gaining additional weight. Additionally, if you are overweight with other risk factors (such as high LDL cholesterol, low HDL cholesterol, or high blood pressure), you should try to lose weight. Even modest weight loss may help lower the risk of disease.';
       } else {
-        this.category = 'obese';
-        this.result = 'Your BMI is ' + this.bmi + ', indicating your weight is in the Obese category for adults of your height. <br><br>People who are overweight or obese are at higher risk for chronic conditions such as high blood pressure, diabetes, and high cholesterol. <br><br>Anyone who is overweight should try to avoid gaining additional weight. Additionally, if you are overweight with other risk factors (such as high LDL cholesterol, low HDL cholesterol, or high blood pressure), you should try to lose weight. Even modest weight loss may help lower the risk of disease.';
+        this.data.category = 'obese';
+        this.data.result = 'Your BMI is ' + this.data.bmi + ', indicating your weight is in the Obese category for adults of your height. <br><br>People who are overweight or obese are at higher risk for chronic conditions such as high blood pressure, diabetes, and high cholesterol. <br><br>Anyone who is overweight should try to avoid gaining additional weight. Additionally, if you are overweight with other risk factors (such as high LDL cholesterol, low HDL cholesterol, or high blood pressure), you should try to lose weight. Even modest weight loss may help lower the risk of disease.';
+      }
+
+      if (this.isRecord) {
+        axios.post('/api/bmi/', this.data).then(function (res) {
+          console.log('Result saved');
+        })["catch"](function (err) {
+          console.log(err.response.data);
+        });
       }
     }
   },
@@ -77050,6 +77215,47 @@ exports.clearImmediate = (typeof self !== "undefined" && self.clearImmediate) ||
 
 /***/ }),
 
+/***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/BMIChartComponent.vue?vue&type=template&id=af5472fc&":
+/*!********************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/BMIChartComponent.vue?vue&type=template&id=af5472fc& ***!
+  \********************************************************************************************************************************************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _vm._m(0)
+}
+var staticRenderFns = [
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "row" }, [
+      _c("div", { staticClass: "col-xl-8 col-lg-12" }, [
+        _c("div", { staticClass: "card" }, [
+          _c("div", { staticClass: "card-body" }, [
+            _c("div", { staticClass: "card-block" }, [
+              _c("canvas", { attrs: { id: "line-chart", height: "500" } })
+            ])
+          ])
+        ])
+      ])
+    ])
+  }
+]
+render._withStripped = true
+
+
+
+/***/ }),
+
 /***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/BMIComponent.vue?vue&type=template&id=6d9544ec&":
 /*!***************************************************************************************************************************************************************************************************************!*\
   !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/BMIComponent.vue?vue&type=template&id=6d9544ec& ***!
@@ -77098,19 +77304,19 @@ var render = function() {
                         {
                           name: "model",
                           rawName: "v-model",
-                          value: _vm.feets,
-                          expression: "feets"
+                          value: _vm.data.feets,
+                          expression: "data.feets"
                         }
                       ],
                       staticClass: "form-control border-primary col-md-6",
                       attrs: { type: "text", placeholder: "Feet" },
-                      domProps: { value: _vm.feets },
+                      domProps: { value: _vm.data.feets },
                       on: {
                         input: function($event) {
                           if ($event.target.composing) {
                             return
                           }
-                          _vm.feets = $event.target.value
+                          _vm.$set(_vm.data, "feets", $event.target.value)
                         }
                       }
                     })
@@ -77122,19 +77328,19 @@ var render = function() {
                         {
                           name: "model",
                           rawName: "v-model",
-                          value: _vm.inches,
-                          expression: "inches"
+                          value: _vm.data.inches,
+                          expression: "data.inches"
                         }
                       ],
                       staticClass: "form-control border-primary col-md-6",
                       attrs: { type: "text", placeholder: "Inch" },
-                      domProps: { value: _vm.inches },
+                      domProps: { value: _vm.data.inches },
                       on: {
                         input: function($event) {
                           if ($event.target.composing) {
                             return
                           }
-                          _vm.inches = $event.target.value
+                          _vm.$set(_vm.data, "inches", $event.target.value)
                         }
                       }
                     })
@@ -77152,35 +77358,103 @@ var render = function() {
                         {
                           name: "model",
                           rawName: "v-model",
-                          value: _vm.kilos,
-                          expression: "kilos"
+                          value: _vm.data.kilos,
+                          expression: "data.kilos"
                         }
                       ],
                       staticClass: "form-control border-primary col-md-6",
                       attrs: { type: "text", placeholder: "Kilo" },
-                      domProps: { value: _vm.kilos },
+                      domProps: { value: _vm.data.kilos },
                       on: {
                         input: function($event) {
                           if ($event.target.composing) {
                             return
                           }
-                          _vm.kilos = $event.target.value
+                          _vm.$set(_vm.data, "kilos", $event.target.value)
                         }
                       }
                     })
                   ])
                 ]),
                 _vm._v(" "),
+                _c("br"),
+                _vm._v(" "),
+                _c("div", { staticClass: "form-group" }, [
+                  _c("label", [_vm._v("Record result")]),
+                  _vm._v(" "),
+                  _c("div", { staticClass: "input-group" }, [
+                    _c(
+                      "label",
+                      {
+                        staticClass:
+                          "display-inline-block custom-control custom-radio ml-1"
+                      },
+                      [
+                        _c("input", {
+                          staticClass: "custom-control-input",
+                          attrs: { type: "radio", name: "customer1" },
+                          domProps: {
+                            checked: _vm.isRecord ? "true" : "false"
+                          },
+                          on: {
+                            click: function($event) {
+                              _vm.isRecord = true
+                            }
+                          }
+                        }),
+                        _vm._v(" "),
+                        _c("span", { staticClass: "custom-control-indicator" }),
+                        _vm._v(" "),
+                        _c(
+                          "span",
+                          { staticClass: "custom-control-description ml-0" },
+                          [_vm._v("Yes")]
+                        )
+                      ]
+                    ),
+                    _vm._v(" "),
+                    _c(
+                      "label",
+                      {
+                        staticClass:
+                          "display-inline-block custom-control custom-radio"
+                      },
+                      [
+                        _c("input", {
+                          staticClass: "custom-control-input",
+                          attrs: { type: "radio", name: "customer1" },
+                          domProps: {
+                            checked: !_vm.isRecord ? "true" : "false"
+                          },
+                          on: {
+                            click: function($event) {
+                              _vm.isRecord = false
+                            }
+                          }
+                        }),
+                        _vm._v(" "),
+                        _c("span", { staticClass: "custom-control-indicator" }),
+                        _vm._v(" "),
+                        _c(
+                          "span",
+                          { staticClass: "custom-control-description ml-0" },
+                          [_vm._v("No")]
+                        )
+                      ]
+                    )
+                  ])
+                ]),
+                _vm._v(" "),
                 _c("hr"),
                 _vm._v(" "),
-                _vm.result != ""
+                _vm.data.result != ""
                   ? _c("div", [
                       _vm._m(4),
                       _vm._v(" "),
                       _c("div", { staticClass: "row" }, [
                         _c("div", { staticClass: "col-md-6" }, [
                           _c("span", {
-                            domProps: { innerHTML: _vm._s(_vm.result) }
+                            domProps: { innerHTML: _vm._s(_vm.data.result) }
                           })
                         ]),
                         _vm._v(" "),
@@ -77196,7 +77470,7 @@ var render = function() {
                                   "tr",
                                   {
                                     style:
-                                      _vm.category == "under"
+                                      _vm.data.category == "under"
                                         ? "background-color: green"
                                         : ""
                                   },
@@ -77211,7 +77485,7 @@ var render = function() {
                                   "tr",
                                   {
                                     style:
-                                      _vm.category == "healthy"
+                                      _vm.data.category == "healthy"
                                         ? "background-color: green"
                                         : ""
                                   },
@@ -77226,7 +77500,7 @@ var render = function() {
                                   "tr",
                                   {
                                     style:
-                                      _vm.category == "over"
+                                      _vm.data.category == "over"
                                         ? "background-color: green"
                                         : ""
                                   },
@@ -77241,7 +77515,7 @@ var render = function() {
                                   "tr",
                                   {
                                     style:
-                                      _vm.category == "obese"
+                                      _vm.data.category == "obese"
                                         ? "background-color: green"
                                         : ""
                                   },
@@ -97150,6 +97424,7 @@ Vue.component('example-component', __webpack_require__(/*! ./components/ExampleC
 Vue.component('equipments', __webpack_require__(/*! ./components/Equipments.vue */ "./resources/js/components/Equipments.vue")["default"]);
 Vue.component('food-supplements', __webpack_require__(/*! ./components/FoodSupplements.vue */ "./resources/js/components/FoodSupplements.vue")["default"]);
 Vue.component('bmi-component', __webpack_require__(/*! ./components/BMIComponent.vue */ "./resources/js/components/BMIComponent.vue")["default"]);
+Vue.component('bmi-chart', __webpack_require__(/*! ./components/BMIChartComponent.vue */ "./resources/js/components/BMIChartComponent.vue")["default"]);
 Vue.component('date-time', __webpack_require__(/*! ./components/dateTime.vue */ "./resources/js/components/dateTime.vue")["default"]);
 /**
  * Next, we will create a fresh Vue application instance and attach it to
@@ -97206,6 +97481,75 @@ window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 //     cluster: process.env.MIX_PUSHER_APP_CLUSTER,
 //     forceTLS: true
 // });
+
+/***/ }),
+
+/***/ "./resources/js/components/BMIChartComponent.vue":
+/*!*******************************************************!*\
+  !*** ./resources/js/components/BMIChartComponent.vue ***!
+  \*******************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _BMIChartComponent_vue_vue_type_template_id_af5472fc___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./BMIChartComponent.vue?vue&type=template&id=af5472fc& */ "./resources/js/components/BMIChartComponent.vue?vue&type=template&id=af5472fc&");
+/* harmony import */ var _BMIChartComponent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./BMIChartComponent.vue?vue&type=script&lang=js& */ "./resources/js/components/BMIChartComponent.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport *//* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+
+
+
+
+
+/* normalize component */
+
+var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__["default"])(
+  _BMIChartComponent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__["default"],
+  _BMIChartComponent_vue_vue_type_template_id_af5472fc___WEBPACK_IMPORTED_MODULE_0__["render"],
+  _BMIChartComponent_vue_vue_type_template_id_af5472fc___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"],
+  false,
+  null,
+  null,
+  null
+  
+)
+
+/* hot reload */
+if (false) { var api; }
+component.options.__file = "resources/js/components/BMIChartComponent.vue"
+/* harmony default export */ __webpack_exports__["default"] = (component.exports);
+
+/***/ }),
+
+/***/ "./resources/js/components/BMIChartComponent.vue?vue&type=script&lang=js&":
+/*!********************************************************************************!*\
+  !*** ./resources/js/components/BMIChartComponent.vue?vue&type=script&lang=js& ***!
+  \********************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_BMIChartComponent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/babel-loader/lib??ref--4-0!../../../node_modules/vue-loader/lib??vue-loader-options!./BMIChartComponent.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/BMIChartComponent.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport */ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_BMIChartComponent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]); 
+
+/***/ }),
+
+/***/ "./resources/js/components/BMIChartComponent.vue?vue&type=template&id=af5472fc&":
+/*!**************************************************************************************!*\
+  !*** ./resources/js/components/BMIChartComponent.vue?vue&type=template&id=af5472fc& ***!
+  \**************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_BMIChartComponent_vue_vue_type_template_id_af5472fc___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../node_modules/vue-loader/lib??vue-loader-options!./BMIChartComponent.vue?vue&type=template&id=af5472fc& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/BMIChartComponent.vue?vue&type=template&id=af5472fc&");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_BMIChartComponent_vue_vue_type_template_id_af5472fc___WEBPACK_IMPORTED_MODULE_0__["render"]; });
+
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_BMIChartComponent_vue_vue_type_template_id_af5472fc___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
+
+
 
 /***/ }),
 
@@ -98004,8 +98348,8 @@ __webpack_require__.r(__webpack_exports__);
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(/*! E:\Laravel App\gym\resources\js\app.js */"./resources/js/app.js");
-module.exports = __webpack_require__(/*! E:\Laravel App\gym\resources\sass\app.scss */"./resources/sass/app.scss");
+__webpack_require__(/*! D:\Projects\gym\resources\js\app.js */"./resources/js/app.js");
+module.exports = __webpack_require__(/*! D:\Projects\gym\resources\sass\app.scss */"./resources/sass/app.scss");
 
 
 /***/ })
