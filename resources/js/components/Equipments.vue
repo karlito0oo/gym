@@ -66,6 +66,11 @@
                                     </div>
 
                                     <div class="form-group">
+                                        <label for="userinput5">Quantity</label>
+                                        <input class="form-control border-primary" type="number" placeholder="Quantity" v-model="datas.quantity">
+                                    </div>
+
+                                    <div class="form-group">
                                         <label for="userinput6">Youtube Link *</label>
                                         <input class="form-control border-primary" type="text" placeholder="3-9CeyWv2QQ" v-model="datas.embedLink" required>
                                     </div>
@@ -119,6 +124,7 @@ export default {
                 description: '',
                 embedLink: '',
                 subDescription: '',
+                quantity: 0,
 
             },
             equipments: {},
@@ -137,6 +143,7 @@ export default {
             this.datas.description = equipment.description;
             this.datas.embedLink = equipment.embedLink;
             this.datas.subDescription = equipment.subDescription;
+            this.datas.quantity = equipment.quantity;
             this.todo = 'Edit';
             $('#dataModal').modal('show');
         },

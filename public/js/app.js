@@ -17488,6 +17488,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _fullcalendar_vue__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @fullcalendar/vue */ "./node_modules/@fullcalendar/vue/dist/main.js");
 /* harmony import */ var _fullcalendar_daygrid__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @fullcalendar/daygrid */ "./node_modules/@fullcalendar/daygrid/main.js");
 /* harmony import */ var _fullcalendar_interaction__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @fullcalendar/interaction */ "./node_modules/@fullcalendar/interaction/main.js");
+/* harmony import */ var _Datatables_vue__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./Datatables.vue */ "./resources/js/components/Datatables.vue");
+/* harmony import */ var _DatatablePagination_vue__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./DatatablePagination.vue */ "./resources/js/components/DatatablePagination.vue");
 //
 //
 //
@@ -17615,6 +17617,119 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+
 
 
 
@@ -17623,8 +17738,10 @@ var moment = __webpack_require__(/*! moment */ "./node_modules/moment/moment.js"
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   components: {
-    FullCalendar: _fullcalendar_vue__WEBPACK_IMPORTED_MODULE_0__["default"] // make the <FullCalendar> tag available
-
+    FullCalendar: _fullcalendar_vue__WEBPACK_IMPORTED_MODULE_0__["default"],
+    // make the <FullCalendar> tag available
+    datatable: _Datatables_vue__WEBPACK_IMPORTED_MODULE_3__["default"],
+    pagination: _DatatablePagination_vue__WEBPACK_IMPORTED_MODULE_4__["default"]
   },
   props: {
     user: {
@@ -17632,7 +17749,48 @@ var moment = __webpack_require__(/*! moment */ "./node_modules/moment/moment.js"
     }
   },
   data: function data() {
+    var sortOrders = {};
+    var columns = [{
+      name: 'name',
+      label: 'Name'
+    }, {
+      name: 'subDescription',
+      label: 'Description'
+    }, {
+      name: 'quantity',
+      label: 'Available Quantity'
+    }, {
+      name: 'embedLink',
+      label: 'Youtube Link'
+    }];
+    columns.forEach(function (column) {
+      sortOrders[column.name] = -1;
+    });
     return {
+      projects: [],
+      columns: columns,
+      sortKey: 'name',
+      sortOrders: sortOrders,
+      showActionTable: true,
+      perPage: ['10', '20', '30'],
+      tableData: {
+        draw: 0,
+        length: 10,
+        search: '',
+        column: 0,
+        dir: 'desc',
+        type: 'students'
+      },
+      pagination: {
+        lastPage: '',
+        currentPage: '',
+        total: '',
+        lastPageUrl: '',
+        nextPageUrl: '',
+        prevPageUrl: '',
+        from: '',
+        to: ''
+      },
       moment: moment,
       calendarOptions: {
         plugins: [_fullcalendar_daygrid__WEBPACK_IMPORTED_MODULE_1__["default"], _fullcalendar_interaction__WEBPACK_IMPORTED_MODULE_2__["default"]],
@@ -17650,7 +17808,8 @@ var moment = __webpack_require__(/*! moment */ "./node_modules/moment/moment.js"
         timeEnd: '',
         capacity: 0,
         id: '',
-        users: []
+        users: [],
+        equipments: []
       },
       todo: 'Add',
       editableId: '',
@@ -17660,12 +17819,51 @@ var moment = __webpack_require__(/*! moment */ "./node_modules/moment/moment.js"
         show: false,
         confirm: false,
         "function": ''
-      }
+      },
+      endPoint: '/api/dt/equipment'
     };
   },
   methods: {
-    deleteDataConfirm: function deleteDataConfirm() {
+    bookNow: function bookNow() {
       var _this = this;
+
+      axios.post('/api/calendars/reserve', this.event).then(function (res) {
+        _this.fetchEvents();
+
+        $('#reservationModal').modal('hide');
+      })["catch"](function (err) {
+        console.log(err);
+      });
+      Swal.fire('Yehey!', 'You successfully booked this slot.', 'success');
+    },
+    addItemReserve: function addItemReserve(equipment) {
+      if (this.containsObject(equipment, this.event.equipments)) {
+        Swal.fire('Warning!', 'Equipment already added to your list.', 'warning');
+      } else if (equipment.available <= 0) {
+        Swal.fire('Warning!', 'Equipment fully booked.', 'warning');
+      } else {
+        this.event.equipments.push(equipment);
+      }
+    },
+    removeItemReserve: function removeItemReserve(equipment) {
+      var removeIndex = this.event.equipments.map(function (item) {
+        return item.id;
+      }).indexOf(equipment.id);
+      this.event.equipments.splice(removeIndex, 1);
+    },
+    containsObject: function containsObject(obj, list) {
+      var x;
+
+      for (x in list) {
+        if (list.hasOwnProperty(x) && list[x] === obj) {
+          return true;
+        }
+      }
+
+      return false;
+    },
+    deleteDataConfirm: function deleteDataConfirm() {
+      var _this2 = this;
 
       $('#dataModal').modal('hide');
       this.notif.confirm = true;
@@ -17681,10 +17879,10 @@ var moment = __webpack_require__(/*! moment */ "./node_modules/moment/moment.js"
         confirmButtonText: 'Yes, delete it!'
       }).then(function (result) {
         if (result.isConfirmed) {
-          axios["delete"]('/api/calendars/' + _this.editableId).then(function (res) {
-            _this.fetchEvents();
+          axios["delete"]('/api/calendars/' + _this2.editableId).then(function (res) {
+            _this2.fetchEvents();
 
-            _this.clearFields();
+            _this2.clearFields();
           })["catch"](function (err) {
             console.log(err);
           });
@@ -17693,79 +17891,79 @@ var moment = __webpack_require__(/*! moment */ "./node_modules/moment/moment.js"
       });
     },
     dataDelete: function dataDelete() {
-      var _this2 = this;
+      var _this3 = this;
 
       axios["delete"]('/api/calendars/' + this.editableId).then(function (res) {
-        _this2.fetchEvents();
+        _this3.fetchEvents();
 
-        _this2.clearFields();
+        _this3.clearFields();
 
-        _this2.showNotif('success', '<strong>Well done!</strong> You succefully deleted an event.');
+        _this3.showNotif('success', '<strong>Well done!</strong> You succefully deleted an event.');
       })["catch"](function (err) {
         console.log(err);
       });
     },
     fetchEvents: function fetchEvents() {
-      var _this3 = this;
+      var _this4 = this;
 
       axios.get('/api/calendars').then(function (res) {
-        _this3.calendarOptions.events = res.data.data;
+        _this4.calendarOptions.events = res.data.data;
       })["catch"](function (err) {
         console.log(err);
       });
     },
     showNotif: function showNotif(type, message) {
-      var _this4 = this;
+      var _this5 = this;
 
       this.notif.type = type;
       this.notif.message = message;
       this.notif.show = true;
       setTimeout(function () {
-        _this4.notif.show = false;
-        _this4.notif.confirm = false;
+        _this5.notif.show = false;
+        _this5.notif.confirm = false;
       }, 5000);
     },
     saveData: function saveData() {
-      var _this5 = this;
+      var _this6 = this;
 
       if (this.todo == 'Add') {
         axios.post('/api/calendars/', this.event).then(function (res) {
           Swal.fire('Saved!', 'You succefully added schedule.', 'success');
 
-          _this5.fetchEvents();
+          _this6.fetchEvents();
 
-          _this5.clearFields();
+          _this6.clearFields();
         })["catch"](function (err) {
-          _this5.errors.record(err.response.data);
+          _this6.errors.record(err.response.data);
 
-          _this5.showNotif('warning', '<strong>Warning!</strong><br>' + _this5.errors.get('name'));
+          _this6.showNotif('warning', '<strong>Warning!</strong><br>' + _this6.errors.get('name'));
         });
       } else if (this.todo == 'Edit') {
         axios.patch('/api/calendars/' + this.editableId, this.event).then(function (res) {
           Swal.fire('Updated!', 'You succefully updated schedule.', 'success');
 
-          _this5.fetchEvents();
+          _this6.fetchEvents();
 
-          _this5.clearFields();
+          _this6.clearFields();
         })["catch"](function (err) {
-          _this5.errors.record(err.response.data);
+          _this6.errors.record(err.response.data);
 
-          _this5.showNotif('warning', '<strong>Warning!</strong><br>' + _this5.errors.get('name'));
+          _this6.showNotif('warning', '<strong>Warning!</strong><br>' + _this6.errors.get('name'));
         });
       }
 
       $('#dataModal').modal('hide');
     },
     approveReservation: function approveReservation(user_id) {
-      var _this6 = this;
+      var _this7 = this;
 
       this.event.user_id = user_id;
       axios.post('/api/calendars/approve/', this.event).then(function (res) {
-        _this6.fetchSelectedEvent();
+        _this7.fetchSelectedEvent();
 
-        _this6.fetchEvents();
+        _this7.fetchEvents();
       })["catch"](function (err) {
-        _this6.errors.record(err.response.data);
+        _this7.errors.record(err.response.data);
       });
     },
     clearFields: function clearFields() {
@@ -17787,16 +17985,16 @@ var moment = __webpack_require__(/*! moment */ "./node_modules/moment/moment.js"
       }
     },
     fetchSelectedEvent: function fetchSelectedEvent() {
-      var _this7 = this;
+      var _this8 = this;
 
       axios.get('/api/calendars/' + this.editableId).then(function (res) {
-        _this7.event = res.data.data;
+        _this8.event = res.data.data;
       })["catch"](function (err) {
         console.log(err);
       });
     },
     showEvent: function showEvent(args) {
-      var _this8 = this;
+      var _this9 = this;
 
       this.event.title = args.event.title;
       this.event.start = this.moment(args.event.start).format('YYYY-MM-DD');
@@ -17816,27 +18014,10 @@ var moment = __webpack_require__(/*! moment */ "./node_modules/moment/moment.js"
       } else if (isPast) {
         Swal.fire('Oppppps!', 'You cannot book this slot anymore.', 'warning');
       } else if (this.user.userRole == 'member') {
-        console.log(args.event);
-
         if (args.event.backgroundColor == '#2196f3') {
-          Swal.fire({
-            title: args.event.title,
-            text: "Book this slot?",
-            icon: 'default',
-            showCancelButton: true,
-            confirmButtonColor: '#3085d6',
-            cancelButtonColor: '#d33',
-            confirmButtonText: 'Yes, book it!'
-          }).then(function (result) {
-            if (result.isConfirmed) {
-              axios.post('/api/calendars/reserve', _this8.event).then(function (res) {
-                _this8.fetchEvents();
-              })["catch"](function (err) {
-                console.log(err);
-              });
-              Swal.fire('Yehey!', 'You successfully booked this slot.', 'success');
-            }
-          });
+          $('#reservationModal').modal('show');
+          this.event.equipments = [];
+          this.getProjects();
         } else if (args.event.backgroundColor == '#e91e62' || args.event.backgroundColor == '#4caf4f') {
           Swal.fire({
             title: args.event.title,
@@ -17848,8 +18029,8 @@ var moment = __webpack_require__(/*! moment */ "./node_modules/moment/moment.js"
             confirmButtonText: 'Yes, cancel it!'
           }).then(function (result) {
             if (result.isConfirmed) {
-              axios.get('/api/calendars/cancel/' + _this8.event.id).then(function (res) {
-                _this8.fetchEvents();
+              axios.get('/api/calendars/cancel/' + _this9.event.id).then(function (res) {
+                _this9.fetchEvents();
               })["catch"](function (err) {
                 console.log(err);
               });
@@ -17859,8 +18040,45 @@ var moment = __webpack_require__(/*! moment */ "./node_modules/moment/moment.js"
         }
       }
     },
-    handle_function_call: function handle_function_call(function_name) {
-      this[function_name]();
+    getProjects: function getProjects() {
+      var _this10 = this;
+
+      this.tableData.draw++;
+      axios.get(this.endPoint, {
+        params: this.tableData
+      }).then(function (response) {
+        var data = response.data;
+
+        if (_this10.tableData.draw == data.draw) {
+          _this10.projects = data.data.data;
+
+          _this10.configPagination(data.data);
+        }
+      })["catch"](function (errors) {
+        console.log(errors);
+      });
+    },
+    configPagination: function configPagination(data) {
+      this.pagination.lastPage = data.last_page;
+      this.pagination.currentPage = data.current_page;
+      this.pagination.total = data.total;
+      this.pagination.lastPageUrl = data.last_page_url;
+      this.pagination.nextPageUrl = data.next_page_url;
+      this.pagination.prevPageUrl = data.prev_page_url;
+      this.pagination.from = data.from;
+      this.pagination.to = data.to;
+    },
+    sortBy: function sortBy(key) {
+      this.sortKey = key;
+      this.sortOrders[key] = this.sortOrders[key] * -1;
+      this.tableData.column = this.getIndex(this.columns, 'name', key);
+      this.tableData.dir = this.sortOrders[key] === 1 ? 'asc' : 'desc';
+      this.getProjects();
+    },
+    getIndex: function getIndex(array, key, value) {
+      return array.findIndex(function (i) {
+        return i[key] == value;
+      });
     }
   },
   mounted: function mounted() {
@@ -18052,6 +18270,11 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   props: {
     user: {
@@ -18065,7 +18288,8 @@ __webpack_require__.r(__webpack_exports__);
         name: '',
         description: '',
         embedLink: '',
-        subDescription: ''
+        subDescription: '',
+        quantity: 0
       },
       equipments: {}
     };
@@ -18081,6 +18305,7 @@ __webpack_require__.r(__webpack_exports__);
       this.datas.description = equipment.description;
       this.datas.embedLink = equipment.embedLink;
       this.datas.subDescription = equipment.subDescription;
+      this.datas.quantity = equipment.quantity;
       this.todo = 'Edit';
       $('#dataModal').modal('show');
     },
@@ -78046,6 +78271,380 @@ var render = function() {
             ]
           )
         ]
+      ),
+      _vm._v(" "),
+      _c(
+        "div",
+        {
+          staticClass: "modal fade text-xs-left",
+          attrs: {
+            id: "reservationModal",
+            tabindex: "-1",
+            role: "dialog",
+            "aria-labelledby": "myModalLabel2",
+            "aria-hidden": "true"
+          }
+        },
+        [
+          _c(
+            "div",
+            {
+              staticClass: "modal-dialog modal-lg",
+              attrs: { role: "document" }
+            },
+            [
+              _c("div", { staticClass: "modal-content" }, [
+                _vm._m(5),
+                _vm._v(" "),
+                _c("div", { staticClass: "modal-body" }, [
+                  _c("div", { staticClass: "row match-height" }, [
+                    _c("div", { staticClass: "col-md-12" }, [
+                      _c("div", { staticClass: "card" }, [
+                        _c("div", { staticClass: "card-body collapse in" }, [
+                          _c("div", { staticClass: "card-block" }, [
+                            _c(
+                              "div",
+                              { staticClass: "form-body" },
+                              [
+                                _vm._m(6),
+                                _vm._v(" "),
+                                _c("center", [
+                                  _c("h5", [
+                                    _vm._v(
+                                      "\n                                    " +
+                                        _vm._s(
+                                          _vm.event.start +
+                                            " " +
+                                            _vm.event.title
+                                        ) +
+                                        "\n                                "
+                                    )
+                                  ])
+                                ]),
+                                _vm._v(" "),
+                                _c("hr"),
+                                _vm._v(" "),
+                                _c("center", [
+                                  _c("p", [_vm._v("Selected Items")])
+                                ]),
+                                _vm._v(" "),
+                                _vm.editableId
+                                  ? _c("div", { staticClass: "row" }, [
+                                      _c(
+                                        "div",
+                                        { staticClass: "table-responsive" },
+                                        [
+                                          _c(
+                                            "table",
+                                            { staticClass: "table" },
+                                            [
+                                              _vm._m(7),
+                                              _vm._v(" "),
+                                              _c(
+                                                "tbody",
+                                                [
+                                                  _vm.event.equipments &&
+                                                  !_vm.event.equipments.length
+                                                    ? _c("tr", [
+                                                        _c(
+                                                          "td",
+                                                          {
+                                                            attrs: {
+                                                              colspan: "5"
+                                                            }
+                                                          },
+                                                          [
+                                                            _c("center", [
+                                                              _vm._v(
+                                                                "No data found."
+                                                              )
+                                                            ])
+                                                          ],
+                                                          1
+                                                        )
+                                                      ])
+                                                    : _vm._e(),
+                                                  _vm._v(" "),
+                                                  _vm._l(
+                                                    _vm.event.equipments,
+                                                    function(project) {
+                                                      return _c(
+                                                        "tr",
+                                                        { key: _vm.user.id },
+                                                        [
+                                                          _c("td", [
+                                                            _vm._v(
+                                                              _vm._s(
+                                                                project.name
+                                                              )
+                                                            )
+                                                          ]),
+                                                          _vm._v(" "),
+                                                          _c("td", [
+                                                            _vm._v(
+                                                              _vm._s(
+                                                                project.subDescription
+                                                              )
+                                                            )
+                                                          ]),
+                                                          _vm._v(" "),
+                                                          _c("td", [
+                                                            _vm._v(
+                                                              _vm._s(
+                                                                project.quantity
+                                                              )
+                                                            )
+                                                          ]),
+                                                          _vm._v(" "),
+                                                          _c("td", [
+                                                            _c(
+                                                              "a",
+                                                              {
+                                                                attrs: {
+                                                                  href:
+                                                                    "https://www.youtube.com/watch?v=" +
+                                                                    project.embedLink,
+                                                                  target:
+                                                                    "_blank"
+                                                                }
+                                                              },
+                                                              [_vm._v("Link")]
+                                                            )
+                                                          ]),
+                                                          _vm._v(" "),
+                                                          _c("td", [
+                                                            _c(
+                                                              "button",
+                                                              {
+                                                                staticClass:
+                                                                  "btn btn-danger btn-sm",
+                                                                on: {
+                                                                  click: function(
+                                                                    $event
+                                                                  ) {
+                                                                    return _vm.removeItemReserve(
+                                                                      project
+                                                                    )
+                                                                  }
+                                                                }
+                                                              },
+                                                              [
+                                                                _c("span", {
+                                                                  staticClass:
+                                                                    "icon-android-delete",
+                                                                  attrs: {
+                                                                    "data-toggle":
+                                                                      "tooltip",
+                                                                    "data-placement":
+                                                                      "left",
+                                                                    title: "",
+                                                                    "data-original-title":
+                                                                      "Use this item in this session"
+                                                                  }
+                                                                })
+                                                              ]
+                                                            )
+                                                          ])
+                                                        ]
+                                                      )
+                                                    }
+                                                  )
+                                                ],
+                                                2
+                                              ),
+                                              _vm._v(" "),
+                                              _vm._t("default")
+                                            ],
+                                            2
+                                          )
+                                        ]
+                                      )
+                                    ])
+                                  : _vm._e(),
+                                _vm._v(" "),
+                                _c("hr"),
+                                _vm._v(" "),
+                                _c("center", [
+                                  _c("p", [_vm._v("Available Equipments")])
+                                ]),
+                                _vm._v(" "),
+                                _c("br"),
+                                _vm._v(" "),
+                                _c("div", { staticClass: "row pl-2 pr-2" }, [
+                                  _c("div", { staticClass: "col-md-3" }, [
+                                    _c("div", { staticClass: "form-group" }, [
+                                      _c("input", {
+                                        directives: [
+                                          {
+                                            name: "model",
+                                            rawName: "v-model",
+                                            value: _vm.tableData.search,
+                                            expression: "tableData.search"
+                                          }
+                                        ],
+                                        staticClass:
+                                          "form-control has-feedback-right",
+                                        attrs: {
+                                          type: "text",
+                                          placeholder: "Search"
+                                        },
+                                        domProps: {
+                                          value: _vm.tableData.search
+                                        },
+                                        on: {
+                                          input: [
+                                            function($event) {
+                                              if ($event.target.composing) {
+                                                return
+                                              }
+                                              _vm.$set(
+                                                _vm.tableData,
+                                                "search",
+                                                $event.target.value
+                                              )
+                                            },
+                                            function($event) {
+                                              return _vm.getProjects()
+                                            }
+                                          ]
+                                        }
+                                      }),
+                                      _vm._v(" "),
+                                      _c("span", {
+                                        staticClass:
+                                          "fa fa-search form-control-feedback right",
+                                        attrs: { "aria-hidden": "true" }
+                                      })
+                                    ])
+                                  ])
+                                ]),
+                                _vm._v(" "),
+                                _c(
+                                  "datatable",
+                                  {
+                                    attrs: {
+                                      columns: _vm.columns,
+                                      sortKey: _vm.sortKey,
+                                      sortOrders: _vm.sortOrders
+                                    },
+                                    on: { sort: _vm.sortBy }
+                                  },
+                                  [
+                                    _c(
+                                      "tbody",
+                                      _vm._l(_vm.projects, function(project) {
+                                        return _c("tr", { key: project.id }, [
+                                          _c("td", [
+                                            _vm._v(_vm._s(project.name))
+                                          ]),
+                                          _vm._v(" "),
+                                          _c("td", [
+                                            _vm._v(
+                                              _vm._s(project.subDescription)
+                                            )
+                                          ]),
+                                          _vm._v(" "),
+                                          _c("td", [
+                                            _vm._v(_vm._s(project.available))
+                                          ]),
+                                          _vm._v(" "),
+                                          _c("td", [
+                                            _c(
+                                              "a",
+                                              {
+                                                attrs: {
+                                                  href:
+                                                    "https://www.youtube.com/watch?v=" +
+                                                    project.embedLink,
+                                                  target: "_blank"
+                                                }
+                                              },
+                                              [_vm._v("Link")]
+                                            )
+                                          ]),
+                                          _vm._v(" "),
+                                          _c("td", [
+                                            _c(
+                                              "button",
+                                              {
+                                                staticClass:
+                                                  "btn btn-success btn-sm",
+                                                on: {
+                                                  click: function($event) {
+                                                    return _vm.addItemReserve(
+                                                      project
+                                                    )
+                                                  }
+                                                }
+                                              },
+                                              [
+                                                _c("span", {
+                                                  staticClass: "icon-plus",
+                                                  attrs: {
+                                                    "data-toggle": "tooltip",
+                                                    "data-placement": "left",
+                                                    title: "",
+                                                    "data-original-title":
+                                                      "Use this item in this session"
+                                                  }
+                                                })
+                                              ]
+                                            )
+                                          ])
+                                        ])
+                                      }),
+                                      0
+                                    )
+                                  ]
+                                ),
+                                _vm._v(" "),
+                                _c("pagination", {
+                                  attrs: { pagination: _vm.pagination },
+                                  on: {
+                                    prev: function($event) {
+                                      return _vm.getProjects(
+                                        _vm.pagination.prevPageUrl
+                                      )
+                                    },
+                                    next: function($event) {
+                                      return _vm.getProjects(
+                                        _vm.pagination.nextPageUrl
+                                      )
+                                    }
+                                  }
+                                })
+                              ],
+                              1
+                            )
+                          ])
+                        ])
+                      ])
+                    ])
+                  ])
+                ]),
+                _vm._v(" "),
+                _c("div", { staticClass: "modal-footer" }, [
+                  _c("div", { staticClass: "form-actions right" }, [
+                    _vm._m(8),
+                    _vm._v(" "),
+                    _c(
+                      "button",
+                      {
+                        staticClass: "btn btn-primary",
+                        attrs: { type: "button" },
+                        on: { click: _vm.bookNow }
+                      },
+                      [
+                        _c("i", { staticClass: "icon-check2" }),
+                        _vm._v(" Book now\n                ")
+                      ]
+                    )
+                  ])
+                ])
+              ])
+            ]
+          )
+        ]
       )
     ],
     1
@@ -78128,6 +78727,68 @@ var staticRenderFns = [
       [
         _c("i", { staticClass: "icon-check2" }),
         _vm._v(" Save\n                ")
+      ]
+    )
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "modal-header" }, [
+      _c(
+        "button",
+        {
+          staticClass: "close",
+          attrs: {
+            type: "button",
+            "data-dismiss": "modal",
+            "aria-label": "Close"
+          }
+        },
+        [_c("span", { attrs: { "aria-hidden": "true" } }, [_vm._v("×")])]
+      )
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("h4", { staticClass: "form-section" }, [
+      _c("i", { staticClass: "icon-folder4" }),
+      _vm._v("RESERVATION")
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("thead", { staticClass: "thead-inverse" }, [
+      _c("tr", [
+        _c("th", [_vm._v("Name")]),
+        _vm._v(" "),
+        _c("th", [_vm._v("Description")]),
+        _vm._v(" "),
+        _c("th", [_vm._v("Available Quanity")]),
+        _vm._v(" "),
+        _c("th", [_vm._v("Youtube Link")]),
+        _vm._v(" "),
+        _c("th", [_vm._v("Action")])
+      ])
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c(
+      "button",
+      {
+        staticClass: "btn btn-warning mr-1",
+        attrs: { type: "button", "data-dismiss": "modal" }
+      },
+      [
+        _c("i", { staticClass: "icon-cross2" }),
+        _vm._v(" Cancel\n                ")
       ]
     )
   }
@@ -78566,6 +79227,43 @@ var render = function() {
                                         _vm.$set(
                                           _vm.datas,
                                           "subDescription",
+                                          $event.target.value
+                                        )
+                                      }
+                                    }
+                                  })
+                                ]),
+                                _vm._v(" "),
+                                _c("div", { staticClass: "form-group" }, [
+                                  _c(
+                                    "label",
+                                    { attrs: { for: "userinput5" } },
+                                    [_vm._v("Quantity")]
+                                  ),
+                                  _vm._v(" "),
+                                  _c("input", {
+                                    directives: [
+                                      {
+                                        name: "model",
+                                        rawName: "v-model",
+                                        value: _vm.datas.quantity,
+                                        expression: "datas.quantity"
+                                      }
+                                    ],
+                                    staticClass: "form-control border-primary",
+                                    attrs: {
+                                      type: "number",
+                                      placeholder: "Quantity"
+                                    },
+                                    domProps: { value: _vm.datas.quantity },
+                                    on: {
+                                      input: function($event) {
+                                        if ($event.target.composing) {
+                                          return
+                                        }
+                                        _vm.$set(
+                                          _vm.datas,
+                                          "quantity",
                                           $event.target.value
                                         )
                                       }

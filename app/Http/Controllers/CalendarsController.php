@@ -78,8 +78,15 @@ class CalendarsController extends Controller
     public function reserve(Request $request)
     {
         $user = Auth::user();
+
+        $equipments = array();
+
+        foreach($request->equipments as $equipment){
+            array_push($equipments, $equipment['id']);
+        }
+
         
-        $user->calendars()->attach($request->id, ['status' => 'pending']);
+        $user->calendars()->attach($request->id, ['status' => 'pending', 'equipments' => '['.implode(',', $equipments).']']);
 
         return $user;
     }

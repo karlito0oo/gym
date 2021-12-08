@@ -121,6 +121,117 @@
     </div>
 </div>
 </form>
+
+
+
+<div class="modal fade text-xs-left" id="reservationModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel2" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <div class="modal-body">
+<div class="row match-height">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-body collapse in">
+                <div class="card-block">
+                        <div class="form-body">
+                            <h4 class="form-section"><i class="icon-folder4"></i>RESERVATION</h4>
+                            
+                            <center>
+                                <h5>
+                                    {{ event.start + ' ' + event.title }}
+                                </h5>
+                            </center>
+
+                            <hr>
+                            <center><p>Selected Items</p></center>
+                            <div class="row" v-if="editableId">
+                                <div class="table-responsive">
+                                    <table class="table">
+                                        <thead class="thead-inverse">
+                                            <tr>
+                                                <th>Name</th>
+                                                <th>Description</th>
+                                                <th>Available Quanity</th>
+                                                <th>Youtube Link</th>
+                                                <th>Action</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr v-if="event.equipments && !event.equipments.length">
+                                                <td colspan="5"><center>No data found.</center></td>
+                                            </tr>
+                                            <tr v-for="project in event.equipments" :key="user.id">
+                                                <td>{{project.name}}</td>
+                                                <td>{{project.subDescription}}</td>
+                                                <td>{{project.quantity}}</td>
+                                                <td><a :href="'https://www.youtube.com/watch?v='+project.embedLink" target="_blank">Link</a></td>
+                                                <td>
+                                                     <button class="btn btn-danger btn-sm" @click="removeItemReserve(project)"><span data-toggle="tooltip" data-placement="left" title="" data-original-title="Use this item in this session" class="icon-android-delete"></span></button>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                        <slot></slot>
+                                    </table>
+                                </div>
+                            </div>
+                            <hr>
+
+                            <center><p>Available Equipments</p></center>
+                            <br>
+                            <div class="row pl-2 pr-2">
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        <input type="text" class="form-control has-feedback-right" placeholder="Search" v-model="tableData.search" @input="getProjects()">
+                                        <span class="fa fa-search form-control-feedback right" aria-hidden="true"></span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <datatable :columns="columns" :sortKey="sortKey" :sortOrders="sortOrders" @sort="sortBy">
+                                <tbody>
+                                    <tr v-for="project in projects" :key="project.id">
+                                        <td>{{project.name}}</td>
+                                        <td>{{project.subDescription}}</td>
+                                        <td>{{project.available}}</td>
+                                        <td><a :href="'https://www.youtube.com/watch?v='+project.embedLink" target="_blank">Link</a></td>
+                                        <td>
+                                             <button class="btn btn-success btn-sm" @click="addItemReserve(project)"><span data-toggle="tooltip" data-placement="left" title="" data-original-title="Use this item in this session" class="icon-plus"></span></button>
+                                        </td>
+                                        
+                                    </tr>
+                                </tbody>
+                            </datatable>
+                            <pagination :pagination="pagination"
+                                        @prev="getProjects(pagination.prevPageUrl)"
+                                        @next="getProjects(pagination.nextPageUrl)">
+                            </pagination>
+
+                        </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+        </div>
+        <div class="modal-footer">
+            <div class="form-actions right">
+                <button type="button" class="btn btn-warning mr-1" data-dismiss="modal">
+                    <i class="icon-cross2"></i> Cancel
+                </button>
+                <button type="button" class="btn btn-primary" @click="bookNow">
+                    <i class="icon-check2"></i> Book now
+                </button>
+            </div>
+        </div>
+    </div>
+    </div>
+</div>
+
     </div>
     
 </template>
@@ -129,10 +240,14 @@
 import FullCalendar from '@fullcalendar/vue'
 import dayGridPlugin from '@fullcalendar/daygrid'
 import interactionPlugin from '@fullcalendar/interaction'
+import Datatable from './Datatables.vue';
+import Pagination from './DatatablePagination.vue';
 var moment = require('moment');
     export default {
         components: {
             FullCalendar, // make the <FullCalendar> tag available
+            datatable: Datatable, 
+            pagination: Pagination
         },
         props: {
             user: {
@@ -140,7 +255,43 @@ var moment = require('moment');
             }
         },
         data() {
+            let sortOrders = {};
+
+            let columns = [
+                { name: 'name', label: 'Name'},
+                { name: 'subDescription', label: 'Description'},
+                { name: 'quantity', label: 'Available Quantity'},
+                { name: 'embedLink', label: 'Youtube Link'},
+            ];
+
+            columns.forEach((column) => {
+               sortOrders[column.name] = -1;
+            });
             return {
+                projects: [],
+                columns: columns,
+                sortKey: 'name',
+                sortOrders: sortOrders,
+                showActionTable: true,
+                perPage: ['10', '20', '30'],
+                tableData: {
+                    draw: 0,
+                    length: 10,
+                    search: '',
+                    column: 0,
+                    dir: 'desc',
+                    type: 'students',
+                },
+                pagination: {
+                    lastPage: '',
+                    currentPage: '',
+                    total: '',
+                    lastPageUrl: '',
+                    nextPageUrl: '',
+                    prevPageUrl: '',
+                    from: '',
+                    to: ''
+                },
                 moment: moment,
                 calendarOptions: {
                     plugins: [ dayGridPlugin, interactionPlugin ],
@@ -159,6 +310,7 @@ var moment = require('moment');
                     capacity: 0,
                     id: '',
                     users: [],
+                    equipments: [],
                 },
                 todo: 'Add',
                 editableId: '',
@@ -169,10 +321,64 @@ var moment = require('moment');
                     confirm: false,
                     function: '',
                 },
+                endPoint: '/api/dt/equipment'
             }
         },
 
         methods: {
+
+            bookNow(){
+                axios.post('/api/calendars/reserve', this.event)
+                .then((res) => {
+                    this.fetchEvents();
+                    $('#reservationModal').modal('hide');
+                })
+                .catch((err) => {
+                    console.log(err); 
+                });
+
+                Swal.fire(
+                'Yehey!',
+                'You successfully booked this slot.',
+                'success'
+                )
+            },
+
+            addItemReserve(equipment){
+                if(this.containsObject(equipment, this.event.equipments)){
+                     Swal.fire(
+                        'Warning!',
+                        'Equipment already added to your list.',
+                        'warning'
+                    )
+                }
+                else if(equipment.available <= 0){
+                    Swal.fire(
+                        'Warning!',
+                        'Equipment fully booked.',
+                        'warning'
+                    )
+                }
+                else{
+                    this.event.equipments.push(equipment);
+                }
+            },
+
+            removeItemReserve(equipment){
+                 var removeIndex = this.event.equipments.map(function(item) { return item.id; }).indexOf(equipment.id);
+                this.event.equipments.splice(removeIndex, 1);
+            },
+
+            containsObject(obj, list) {
+                var x;
+                for (x in list) {
+                    if (list.hasOwnProperty(x) && list[x] === obj) {
+                        return true;
+                    }
+                }
+                return false;
+            },
+
             deleteDataConfirm(){
                 $('#dataModal').modal('hide');
                 this.notif.confirm = true;
@@ -350,33 +556,12 @@ var moment = require('moment');
                     )
                 }
                 else if(this.user.userRole == 'member'){
-                    console.log(args.event);
                     if(args.event.backgroundColor == '#2196f3'){
-                        Swal.fire({
-                            title: args.event.title,
-                            text: "Book this slot?",
-                            icon: 'default',
-                            showCancelButton: true,
-                            confirmButtonColor: '#3085d6',
-                            cancelButtonColor: '#d33',
-                            confirmButtonText: 'Yes, book it!'
-                            }).then((result) => {
-                            if (result.isConfirmed) {
-                                axios.post('/api/calendars/reserve', this.event)
-                                .then((res) => {
-                                    this.fetchEvents();
-                                })
-                                .catch((err) => {
-                                    console.log(err); 
-                                });
 
-                                Swal.fire(
-                                'Yehey!',
-                                'You successfully booked this slot.',
-                                'success'
-                                )
-                            }
-                        })
+                        $('#reservationModal').modal('show');
+                        this.event.equipments = [];
+
+                        this.getProjects();
                     }
                     else if(args.event.backgroundColor == '#e91e62' || args.event.backgroundColor == '#4caf4f'){
                         Swal.fire({
@@ -407,12 +592,43 @@ var moment = require('moment');
                     }
                     
                 }
-                
-
-                
             },
-            handle_function_call(function_name) {
-                this[function_name]()
+
+            getProjects() {
+                this.tableData.draw++;
+                axios.get(this.endPoint, {params: this.tableData})
+                    .then(response => {
+                        let data = response.data;
+                        if (this.tableData.draw == data.draw) {
+                            this.projects = data.data.data;
+                            this.configPagination(data.data);
+                        }
+                    })
+                    .catch(errors => {
+                        console.log(errors);
+                    });
+            },
+
+            configPagination(data) {
+                this.pagination.lastPage = data.last_page;
+                this.pagination.currentPage = data.current_page;
+                this.pagination.total = data.total;
+                this.pagination.lastPageUrl = data.last_page_url;
+                this.pagination.nextPageUrl = data.next_page_url;
+                this.pagination.prevPageUrl = data.prev_page_url;
+                this.pagination.from = data.from;
+                this.pagination.to = data.to;
+            },
+            sortBy(key) {
+                this.sortKey = key;
+                this.sortOrders[key] = this.sortOrders[key] * -1;
+                this.tableData.column = this.getIndex(this.columns, 'name', key);
+                this.tableData.dir = this.sortOrders[key] === 1 ? 'asc' : 'desc';
+                this.getProjects();
+            },
+
+            getIndex(array, key, value) {
+                return array.findIndex(i => i[key] == value)
             },
         },
 

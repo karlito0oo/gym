@@ -42,6 +42,7 @@ class EquipmentsController extends Controller
         $equipment->description = $request->description;
         $equipment->subDescription = $request->subDescription;
         $equipment->embedLink = $request->embedLink;
+        $equipment->quantity = $request->quantity;
         $equipment->save();
 
         return $equipment;
@@ -83,6 +84,7 @@ class EquipmentsController extends Controller
         $equipment->description = $request->description;
         $equipment->subDescription = $request->subDescription;
         $equipment->embedLink = $request->embedLink;
+        $equipment->quantity = $request->quantity;
         $equipment->save();
 
         return $equipment;
@@ -106,5 +108,30 @@ class EquipmentsController extends Controller
         return view('equipments', [
             'user' => $user,
         ]);
+    }
+
+    public function dtEquipment(Request $request)
+    {
+        $columns = ['name', 'subDescription', 'embedLink', 'created_at'];
+
+        $length = $request->input('length');
+        $column = $request->input('column'); //Index
+        $dir = $request->input('dir');
+        $searchValue = $request->input('search');
+
+        $query = Equipment::orderBy($columns[$column], $dir);
+
+
+
+        if ($searchValue) {
+            $query->where(function($query) use ($searchValue, $columns) {
+                foreach(array_keys($columns) as $key){
+                    $query->orWhere($columns[$key], 'like', '%' . $searchValue . '%');
+                }
+            });
+        }
+
+        $projects = $query->paginate($length);
+        return ['data' => $projects, 'draw' => $request->input('draw')];
     }
 }

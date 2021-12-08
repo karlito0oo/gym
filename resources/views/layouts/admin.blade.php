@@ -198,12 +198,12 @@
             
             <li class="nav-item {{ collect(request()->segments())->last() == 'home' ? 'active' : ''}}"><a href="{{ url('/home') }}"><i class="icon-home"></i><span data-i18n="nav.form_layouts.form_layout_basic" class="menu-title">{{ (Auth::user() && Auth::user()->role->name == 'admin') ? "Dashboard" : "Home" }}</span></a>
             <li class="nav-item {{ collect(request()->segments())->last() == 'food-supplements' ? 'active' : ''}}"><a href="{{ url('/home/food-supplements') }}"><i class="icon-heartbeat"></i><span data-i18n="nav.form_layouts.form_layout_basic" class="menu-title">Food Supplements</span></a>
+            <li class="nav-item {{ collect(request()->segments())->last() == 'equipments' ? 'active' : ''}}"><a href="{{ url('/home/equipments') }}"><i class="icon-bicycle"></i><span data-i18n="nav.form_layouts.form_layout_basic" class="menu-title">Equipments</span></a>
             @if(Auth::user() && Auth::user()->role->name == 'member')
             <li class="nav-item {{ collect(request()->segments())->last() == 'attendances' ? 'active' : ''}}"><a href="{{ url('/home/attendances') }}"><i class="icon-clock-o"></i><span data-i18n="nav.form_layouts.form_layout_basic" class="menu-title">Attendances</span></a>
             @endif
             <li class="nav-item {{ collect(request()->segments())->last() == 'schedules' ? 'active' : ''}}"><a href="{{ url('/home/schedules') }}"><i class="icon-ios-calendar"></i><span data-i18n="nav.form_layouts.form_layout_basic" class="menu-title">Schedules</span></a>
             @if(Auth::user() && Auth::user()->role->name == 'admin')
-            <li class="nav-item {{ collect(request()->segments())->last() == 'equipments' ? 'active' : ''}}"><a href="{{ url('/home/equipments') }}"><i class="icon-bicycle"></i><span data-i18n="nav.form_layouts.form_layout_basic" class="menu-title">Equipments</span></a>
             <li class="nav-item {{ collect(request()->segments())->last() == 'members' ? 'active' : ''}}"><a href="{{ url('/home/members') }}"><i class="icon-ios-people"></i><span data-i18n="nav.form_layouts.form_layout_basic" class="menu-title">Users</span></a>
             @endif
             </ul>
