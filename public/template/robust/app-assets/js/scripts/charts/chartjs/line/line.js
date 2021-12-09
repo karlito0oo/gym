@@ -63,9 +63,9 @@ $(window).on("load", function(){
 
             // Chart Data
             var chartData = {
-                labels: data.months,
+                labels: data.days,
                 datasets: [{
-                    label: "Average BMI per Month",
+                    label: "Average BMI Last 7 Days",
                     data: data.bmis,
                     lineTension: 0,
                     fill: false,

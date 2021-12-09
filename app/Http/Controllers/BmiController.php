@@ -97,28 +97,21 @@ class BmiController extends Controller
     {
         $user = Auth::user();
 
-        $monthsName = [];
+        $days = [];
         $bmiRecord = [];
-        for ($i=12; $i >= 0; $i--) { 
-            array_push($monthsName, Carbon::now()->subMonth($i)->format('F Y'));
-
-            //get BMI
-            $avg = Bmi::where('user_id', $user->id)
-                ->whereMonth('created_at', Carbon::now()->subMonth($i)->format('m'))
-                ->whereYear('created_at', Carbon::now()->subMonth($i)->format('yy'))
-                ->avg('bmi');
+        for ($i=6; $i >= 0; $i--) { 
+            array_push($days, Carbon::now()->subDays($i)->format('l'));
 
             $avg = Bmi::select(\DB::raw('IFNULL(AVG(bmi), 0) as bmi'))
                 ->where('user_id', $user->id)
-                ->whereMonth('created_at', Carbon::now()->subMonth($i)->format('m'))
-                ->whereYear('created_at', Carbon::now()->subMonth($i)->format('Y'))
+                ->whereDate('created_at', Carbon::now()->subDays($i))
                 ->first();
             array_push($bmiRecord, $avg->bmi);
 
         }
 
         return [
-            'months' => $monthsName,
+            'days' => $days,
             'bmis' => $bmiRecord,
         ];
     }
